@@ -1,0 +1,1047 @@
+<title>曼谷芭達雅行程地圖</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@500;700&display=swap">
+<style>
+/* required styles */
+
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.leaflet-container {
+	overflow: hidden;
+	}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	  -webkit-user-drag: none;
+	}
+/* Prevents IE11 from highlighting tiles in blue */
+.leaflet-tile::selection {
+	background: transparent;
+}
+/* Safari renders non-retina tile on retina better with this, but Chrome is worse */
+.leaflet-safari .leaflet-tile {
+	image-rendering: -webkit-optimize-contrast;
+	}
+/* hack that prevents hw layers "stretching" when loading new tiles */
+.leaflet-safari .leaflet-tile-container {
+	width: 1600px;
+	height: 1600px;
+	-webkit-transform-origin: 0 0;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	display: block;
+	}
+/* .leaflet-container svg: reset svg max-width decleration shipped in Joomla! (joomla.org) 3.x */
+/* .leaflet-container img: map is broken in FF if you have max-width: 100% on tiles */
+.leaflet-container .leaflet-overlay-pane svg {
+	max-width: none !important;
+	max-height: none !important;
+	}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+	max-width: none !important;
+	max-height: none !important;
+	width: auto;
+	padding: 0;
+	}
+
+.leaflet-container img.leaflet-tile {
+	/* See: https://bugs.chromium.org/p/chromium/issues/detail?id=600120 */
+	mix-blend-mode: plus-lighter;
+}
+
+.leaflet-container.leaflet-touch-zoom {
+	-ms-touch-action: pan-x pan-y;
+	touch-action: pan-x pan-y;
+	}
+.leaflet-container.leaflet-touch-drag {
+	-ms-touch-action: pinch-zoom;
+	/* Fallback for FF which doesn't support pinch-zoom */
+	touch-action: none;
+	touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.leaflet-container {
+	-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.leaflet-tile-loaded {
+	visibility: inherit;
+	}
+.leaflet-zoom-box {
+	width: 0;
+	height: 0;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	z-index: 800;
+	}
+/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */
+.leaflet-overlay-pane svg {
+	-moz-user-select: none;
+	}
+
+.leaflet-pane         { z-index: 400; }
+
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+
+.leaflet-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.lvml {
+	behavior: url(#default#VML);
+	display: inline-block;
+	position: absolute;
+	}
+
+
+/* control positioning */
+
+.leaflet-control {
+	position: relative;
+	z-index: 800;
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+.leaflet-top,
+.leaflet-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.leaflet-top {
+	top: 0;
+	}
+.leaflet-right {
+	right: 0;
+	}
+.leaflet-bottom {
+	bottom: 0;
+	}
+.leaflet-left {
+	left: 0;
+	}
+.leaflet-control {
+	float: left;
+	clear: both;
+	}
+.leaflet-right .leaflet-control {
+	float: right;
+	}
+.leaflet-top .leaflet-control {
+	margin-top: 10px;
+	}
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 10px;
+	}
+.leaflet-left .leaflet-control {
+	margin-left: 10px;
+	}
+.leaflet-right .leaflet-control {
+	margin-right: 10px;
+	}
+
+
+/* zoom and fade animations */
+
+.leaflet-fade-anim .leaflet-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	opacity: 1;
+	}
+.leaflet-zoom-animated {
+	-webkit-transform-origin: 0 0;
+	    -ms-transform-origin: 0 0;
+	        transform-origin: 0 0;
+	}
+svg.leaflet-zoom-animated {
+	will-change: transform;
+}
+
+.leaflet-zoom-anim .leaflet-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	        transition: none;
+	}
+
+.leaflet-zoom-anim .leaflet-zoom-hide {
+	visibility: hidden;
+	}
+
+
+/* cursors */
+
+.leaflet-interactive {
+	cursor: pointer;
+	}
+.leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+	}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+	cursor: crosshair;
+	}
+.leaflet-popup-pane,
+.leaflet-control {
+	cursor: auto;
+	}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	cursor:         grabbing;
+	}
+
+/* marker & overlays interactivity */
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+	pointer-events: none;
+	}
+
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+
+/* visual tweaks */
+
+.leaflet-container {
+	background: #ddd;
+	outline-offset: 1px;
+	}
+.leaflet-container a {
+	color: #0078A8;
+	}
+.leaflet-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+
+
+/* general typography */
+.leaflet-container {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-size: 0.75rem;
+	line-height: 1.5;
+	}
+
+
+/* general toolbar styles */
+
+.leaflet-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.leaflet-bar a {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+	background-color: #f4f4f4;
+	}
+.leaflet-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.leaflet-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.leaflet-bar a.leaflet-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+
+.leaflet-touch .leaflet-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+.leaflet-touch .leaflet-bar a:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	}
+.leaflet-touch .leaflet-bar a:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	}
+
+/* zoom control */
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}
+
+
+/* layers control */
+
+.leaflet-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.leaflet-control-layers-toggle {
+	background-image: url(images/layers.png);
+	width: 36px;
+	height: 36px;
+	}
+.leaflet-retina .leaflet-control-layers-toggle {
+	background-image: url(images/layers-2x.png);
+	background-size: 26px 26px;
+	}
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+	display: none;
+	}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.leaflet-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.leaflet-control-layers-scrollbar {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding-right: 5px;
+	}
+.leaflet-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.leaflet-control-layers label {
+	display: block;
+	font-size: 13px;
+	font-size: 1.08333em;
+	}
+.leaflet-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+
+/* Default icon URLs */
+.leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */
+	background-image: url(images/marker-icon.png);
+	}
+
+
+/* attribution and scale controls */
+
+.leaflet-container .leaflet-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin: 0;
+	}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	line-height: 1.4;
+	}
+.leaflet-control-attribution a {
+	text-decoration: none;
+	}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+	text-decoration: underline;
+	}
+.leaflet-attribution-flag {
+	display: inline !important;
+	vertical-align: baseline !important;
+	width: 1em;
+	height: 0.6669em;
+	}
+.leaflet-left .leaflet-control-scale {
+	margin-left: 5px;
+	}
+.leaflet-bottom .leaflet-control-scale {
+	margin-bottom: 5px;
+	}
+.leaflet-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	white-space: nowrap;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	background: rgba(255, 255, 255, 0.8);
+	text-shadow: 1px 1px #fff;
+	}
+.leaflet-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	box-shadow: none;
+	}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+
+
+/* popup */
+
+.leaflet-popup {
+	position: absolute;
+	text-align: center;
+	margin-bottom: 20px;
+	}
+.leaflet-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.leaflet-popup-content {
+	margin: 13px 24px 13px 20px;
+	line-height: 1.3;
+	font-size: 13px;
+	font-size: 1.08333em;
+	min-height: 1px;
+	}
+.leaflet-popup-content p {
+	margin: 17px 0;
+	margin: 1.3em 0;
+	}
+.leaflet-popup-tip-container {
+	width: 40px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	margin-top: -1px;
+	margin-left: -20px;
+	overflow: hidden;
+	pointer-events: none;
+	}
+.leaflet-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+
+	margin: -10px auto 0;
+	pointer-events: auto;
+
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: white;
+	color: #333;
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.leaflet-container a.leaflet-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: none;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	font: 16px/24px Tahoma, Verdana, sans-serif;
+	color: #757575;
+	text-decoration: none;
+	background: transparent;
+	}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+	color: #585858;
+	}
+.leaflet-popup-scrolled {
+	overflow: auto;
+	}
+
+.leaflet-oldie .leaflet-popup-content-wrapper {
+	-ms-zoom: 1;
+	}
+.leaflet-oldie .leaflet-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+	border: 1px solid #999;
+	}
+
+
+/* div icon */
+
+.leaflet-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+
+
+/* Tooltip */
+/* Base styles for the element that has a tooltip */
+.leaflet-tooltip {
+	position: absolute;
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	color: #222;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	}
+.leaflet-tooltip.leaflet-interactive {
+	cursor: pointer;
+	pointer-events: auto;
+	}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	position: absolute;
+	pointer-events: none;
+	border: 6px solid transparent;
+	background: transparent;
+	content: "";
+	}
+
+/* Directions */
+
+.leaflet-tooltip-bottom {
+	margin-top: 6px;
+}
+.leaflet-tooltip-top {
+	margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+	left: 50%;
+	margin-left: -6px;
+	}
+.leaflet-tooltip-top:before {
+	bottom: 0;
+	margin-bottom: -12px;
+	border-top-color: #fff;
+	}
+.leaflet-tooltip-bottom:before {
+	top: 0;
+	margin-top: -12px;
+	margin-left: -6px;
+	border-bottom-color: #fff;
+	}
+.leaflet-tooltip-left {
+	margin-left: -6px;
+}
+.leaflet-tooltip-right {
+	margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	top: 50%;
+	margin-top: -6px;
+	}
+.leaflet-tooltip-left:before {
+	right: 0;
+	margin-right: -12px;
+	border-left-color: #fff;
+	}
+.leaflet-tooltip-right:before {
+	left: 0;
+	margin-left: -12px;
+	border-right-color: #fff;
+	}
+
+/* Printing */
+
+@media print {
+	/* Prevent printers from removing background-images of controls. */
+	.leaflet-control {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+		}
+	}
+
+</style>
+<style>
+/* Layout: one-screen travel app. Phone = map on top, day timeline below; desktop = timeline rail left, map right. */
+:root{
+  --bg:#f6f4ef; --panel:#ffffff; --ink:#1e2a33; --muted:#5f6b73; --line:#e3ded3;
+  --sea:#cfe3ea; --land:#f3efe4; --coast:#9fbcc6;
+  --group:#2f5da8; --group-soft:#e3ebf8;
+  --free:#d8761e; --free-soft:#fcecdc;
+  --move:#6b7780; --move-soft:#eceff1;
+  --tbc:#b4372f; --tbc-soft:#fbe5e2;
+  --font-body:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+  --font-num:"Outfit","Noto Sans TC",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141a1f; --panel:#1b232a; --ink:#e8ecef; --muted:#9aa6ae; --line:#2c363e;
+  --sea:#13232c; --land:#222c33; --coast:#3d5966;
+  --group:#7fa6ea; --group-soft:#1f2c42;
+  --free:#f0a057; --free-soft:#3a2a1a;
+  --move:#9aa6ae; --move-soft:#262f36;
+  --tbc:#f08a80; --tbc-soft:#3b2120; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141a1f; --panel:#1b232a; --ink:#e8ecef; --muted:#9aa6ae; --line:#2c363e;
+  --sea:#13232c; --land:#222c33; --coast:#3d5966;
+  --group:#7fa6ea; --group-soft:#1f2c42;
+  --free:#f0a057; --free-soft:#3a2a1a;
+  --move:#9aa6ae; --move-soft:#262f36;
+  --tbc:#f08a80; --tbc-soft:#3b2120; color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.55;overflow:hidden}
+.app{height:100%;display:flex;flex-direction:column}
+header{background:var(--panel);border-bottom:1px solid var(--line);padding-block:10px 8px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:8px;flex:none}
+.title-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h1{font-size:19px;font-weight:900;margin:0;letter-spacing:.02em;text-wrap:balance}
+.sub{font-size:12.5px;color:var(--muted)}
+.days{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-inline:-4px;padding-inline:4px;padding-block:2px}
+.days::-webkit-scrollbar{display:none}
+.day{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;
+  padding:5px 12px;font:inherit;font-size:13.5px;cursor:pointer;display:flex;gap:6px;align-items:baseline;white-space:nowrap}
+.day b{font-family:var(--font-num);font-weight:700}
+.day span{color:var(--muted);font-size:12px}
+.day[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.day[aria-pressed="true"] span{color:var(--bg);opacity:.8}
+.day:focus-visible,.layer:focus-visible,.item:focus-visible,.btn:focus-visible{outline:2px solid var(--group);outline-offset:2px}
+.layers{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.layer{font:inherit;font-size:12.5px;border-radius:8px;padding:3px 10px 3px 8px;cursor:pointer;display:flex;align-items:center;gap:6px;
+  border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.layer i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.layer[aria-pressed="false"]{opacity:.45;text-decoration:line-through}
+.layer.g i{background:var(--group)} .layer.f i{background:var(--free)} .layer.m i{background:transparent;border:2px dashed var(--move);border-radius:2px;width:12px;height:0}
+
+.main{flex:1;min-height:0;display:flex;flex-direction:column}
+.mapwrap{position:relative;flex:0 0 46%;min-height:0;border-bottom:1px solid var(--line)}
+#map{position:absolute;inset:0;background:var(--sea)}
+.list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding-block:12px calc(16px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:860px){
+  .main{flex-direction:row-reverse}
+  .mapwrap{flex:1;border-bottom:0;border-left:1px solid var(--line)}
+  .list{flex:0 0 400px}
+}
+.basemap-note{position:absolute;left:calc(10px + env(safe-area-inset-left,0px));bottom:10px;z-index:500;max-width:min(320px,70%);
+  background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:8px;font-size:11.5px;padding:4px 8px;line-height:1.4}
+
+.dayhead{display:flex;flex-direction:column;gap:2px;margin-bottom:10px}
+.dayhead h2{margin:0;font-size:17px;font-weight:900;text-wrap:balance}
+.dayhead p{margin:0;color:var(--muted);font-size:13px}
+.daygroup + .daygroup{margin-top:20px}
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.item{display:grid;grid-template-columns:62px 1fr;gap:10px;align-items:start;padding:8px 10px;border-radius:10px;cursor:pointer;
+  background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);text-align:left;width:100%;font:inherit;color:inherit}
+.item.group{--c:var(--group)} .item.free{--c:var(--free)} .item.move{--c:var(--move)}
+.item.free{border-style:solid dashed dashed solid;border-left-style:solid}
+.item:hover{background:var(--bg)}
+.item.active{box-shadow:0 0 0 2px var(--c) inset}
+.time{font-family:var(--font-num);font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;color:var(--c);line-height:1.3;padding-top:2px;word-break:keep-all}
+.body{min-width:0;display:flex;flex-direction:column;gap:3px}
+.what{font-weight:700;font-size:14.5px;line-height:1.4}
+.note{font-size:12.5px;color:var(--muted);line-height:1.5}
+.tags{display:flex;gap:4px;flex-wrap:wrap}
+.tag{font-size:11px;border-radius:5px;padding:0 6px;line-height:18px;font-weight:500}
+.tag.group{background:var(--group-soft);color:var(--group)}
+.tag.free{background:var(--free-soft);color:var(--free)}
+.tag.move{background:var(--move-soft);color:var(--move)}
+.tag.tbc{background:var(--tbc-soft);color:var(--tbc)}
+.tag.nopin{background:var(--move-soft);color:var(--muted)}
+.empty{color:var(--muted);font-size:13px;padding:8px 0}
+.foot{margin-top:22px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.foot a{color:var(--group)}
+
+/* markers */
+.pin{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:15px;line-height:1;
+  background:var(--panel);border:3px solid var(--c);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.pin.hotel{border-radius:8px}
+.pin.free{border-style:dashed}
+.pin.dim{opacity:.35}
+.pin-wrap{--c:var(--group)} .pin-wrap.free{--c:var(--free)} .pin-wrap.move{--c:var(--move)}
+.leaflet-tooltip.lbl{background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:none;font-family:var(--font-body);
+  font-size:11.5px;font-weight:700;padding:1px 6px;border-radius:5px}
+.leaflet-tooltip.lbl::before{display:none}
+.leaflet-container{font-family:var(--font-body)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel);color:var(--ink)}
+.leaflet-popup-content{margin:12px 14px;font-size:13px;line-height:1.55;width:min(270px,70vw)!important}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+.leaflet-bar a{background:var(--panel);color:var(--ink);border-bottom-color:var(--line)}
+.leaflet-control-attribution{background:var(--panel)!important;color:var(--muted)}
+.leaflet-control-attribution a{color:var(--group)}
+.pop h3{margin:0 0 2px;font-size:15px;font-weight:900}
+.pop .en{color:var(--muted);font-size:12px;margin-bottom:6px}
+.pop dl{margin:6px 0;display:grid;grid-template-columns:auto 1fr;gap:2px 8px}
+.pop dt{color:var(--muted);font-size:12px;white-space:nowrap}
+.pop dd{margin:0}
+.pop .sched{margin:6px 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
+.pop .sched li{display:flex;gap:6px;align-items:baseline}
+.pop .sched .t{font-family:var(--font-num);font-weight:700;font-size:12px;color:var(--c);min-width:58px}
+.pop .prec{font-size:11.5px;color:var(--muted);margin-top:6px}
+.pop .prec.approx{color:var(--tbc)}
+.btn{display:inline-block;margin-top:8px;padding:5px 10px;border-radius:8px;background:var(--ink);color:var(--bg)!important;text-decoration:none;font-weight:700;font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app">
+  <header>
+    <div class="title-row">
+      <h1>曼谷芭達雅行程地圖 🗺️</h1>
+      <span class="sub">康橋 BKK1151129 · 2026/11/29–12/3 · 3 人</span>
+    </div>
+    <div class="days" id="days" role="toolbar" aria-label="選擇日期"></div>
+    <div class="layers" role="group" aria-label="圖層">
+      <button class="layer g" id="lg" aria-pressed="true"><i></i>團體行程</button>
+      <button class="layer f" id="lf" aria-pressed="true"><i></i>自由時間建議</button>
+      <button class="layer m" id="lm" aria-pressed="true"><i></i>交通移動</button>
+    </div>
+  </header>
+  <div class="main">
+    <div class="mapwrap"><div id="map" aria-label="行程地圖"></div><div class="basemap-note" id="bnote" hidden></div></div>
+    <div class="list" id="list"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+const LAND = {"wide":[[[[117.31,8.44],[117.22,8.37],[117.23,8.46],[117.25,8.54],[117.35,8.71],[117.42,8.77],[117.53,8.9],[117.59,8.97],[117.74,9.1],[117.88,9.24],[117.93,9.25],[117.98,9.25],[118.03,9.27],[118.12,9.35],[118.34,9.6],[118.53,9.79],[118.73,10.03],[118.82,10.11],[118.85,10.13],[119.02,10.35],[119.08,10.39],[119.14,10.41],[119.18,10.44],[119.22,10.48],[119.29,10.57],[119.31,10.69],[119.3,10.75],[119.26,10.85],[119.31,10.97],[119.34,11.03],[119.47,11.29],[119.5,11.35],[119.55,11.31],[119.56,11.27],[119.53,11.16],[119.53,11.1],[119.56,11.05],[119.53,10.95],[119.62,10.71],[119.68,10.55],[119.69,10.5],[119.59,10.41],[119.54,10.38],[119.42,10.35],[119.37,10.33],[119.29,10.25],[119.23,10.15],[119.22,10.1],[119.19,10.06],[118.95,9.99],[118.84,9.95],[118.78,9.92],[118.76,9.86],[118.77,9.77],[118.57,9.42],[118.5,9.33],[118.44,9.26],[118.35,9.2],[118.23,9.17],[118.13,9.1],[118.07,8.98],[117.99,8.88],[117.89,8.8],[117.78,8.73],[117.68,8.68],[117.57,8.64],[117.54,8.6],[117.52,8.54],[117.47,8.51],[117.41,8.5],[117.31,8.44]]],[[[122.5,11.61],[122.61,11.56],[122.73,11.61],[122.84,11.6],[122.93,11.53],[122.9,11.49],[122.9,11.44],[123.1,11.54],[123.16,11.54],[123.16,11.44],[123.14,11.36],[123.12,11.29],[123.08,11.2],[123.02,11.12],[122.94,11.06],[122.85,11.02],[122.8,10.99],[122.79,10.94],[122.79,10.88],[122.77,10.82],[122.67,10.8],[122.52,10.69],[122.2,10.62],[122.11,10.58],[122.05,10.51],[121.99,10.46],[121.95,10.44],[121.94,10.47],[121.94,10.49],[121.98,10.64],[121.97,10.7],[121.95,10.76],[121.96,10.87],[122.02,10.98],[122.05,11.1],[122.06,11.33],[122.1,11.64],[122.1,11.68],[122.07,11.72],[121.94,11.76],[121.89,11.79],[121.92,11.85],[121.96,11.9],[122.03,11.9],[122.09,11.86],[122.29,11.77],[122.4,11.7],[122.5,11.61]]],[[[123.13,9.06],[123.07,9.05],[122.99,9.06],[122.95,9.11],[122.87,9.32],[122.77,9.37],[122.67,9.41],[122.61,9.44],[122.56,9.48],[122.41,9.69],[122.4,9.82],[122.42,9.9],[122.47,9.96],[122.52,9.98],[122.65,9.98],[122.71,9.99],[122.86,10.09],[122.87,10.12],[122.87,10.28],[122.85,10.4],[122.82,10.5],[122.86,10.55],[122.91,10.6],[122.96,10.7],[122.97,10.77],[122.97,10.84],[122.98,10.89],[123.03,10.91],[123.22,10.99],[123.26,10.99],[123.51,10.92],[123.56,10.82],[123.57,10.78],[123.53,10.66],[123.49,10.58],[123.41,10.46],[123.34,10.32],[123.3,10.12],[123.27,10.06],[123.19,9.93],[123.16,9.86],[123.16,9.72],[123.15,9.66],[123.15,9.61],[123.31,9.36],[123.32,9.32],[123.32,9.27],[123.29,9.22],[123.23,9.12],[123.19,9.09],[123.13,9.06]]],[[[124.57,11.34],[124.65,11.31],[124.73,11.32],[124.82,11.4],[124.93,11.37],[125,11.26],[125.03,11.21],[125.05,11.14],[125.04,10.95],[125.01,10.79],[125.03,10.75],[125.09,10.72],[125.13,10.68],[125.16,10.64],[125.19,10.59],[125.2,10.46],[125.26,10.35],[125.27,10.31],[125.25,10.26],[125.15,10.27],[125.14,10.24],[125.14,10.19],[125.11,10.22],[125.05,10.32],[124.99,10.37],[125.01,10.2],[125.02,10.11],[125.03,10.03],[124.93,10.1],[124.81,10.14],[124.78,10.17],[124.79,10.27],[124.79,10.33],[124.74,10.44],[124.8,10.68],[124.8,10.73],[124.79,10.78],[124.74,10.88],[124.66,10.96],[124.62,10.96],[124.5,10.9],[124.44,10.92],[124.41,11.15],[124.37,11.37],[124.33,11.43],[124.31,11.49],[124.33,11.53],[124.38,11.52],[124.44,11.46],[124.51,11.42],[124.55,11.4],[124.57,11.34]]],[[[125.24,12.53],[125.31,12.45],[125.33,12.39],[125.32,12.32],[125.35,12.29],[125.41,12.28],[125.48,12.25],[125.54,12.19],[125.5,12.14],[125.51,12.06],[125.46,11.95],[125.46,11.77],[125.5,11.71],[125.5,11.66],[125.49,11.59],[125.51,11.55],[125.59,11.38],[125.61,11.32],[125.58,11.28],[125.57,11.24],[125.63,11.23],[125.7,11.16],[125.75,11.07],[125.74,11.05],[125.68,11.12],[125.63,11.13],[125.43,11.11],[125.31,11.14],[125.23,11.15],[125.16,11.27],[125.09,11.29],[125.03,11.34],[124.94,11.48],[124.92,11.56],[124.98,11.64],[125,11.7],[125,11.77],[124.93,11.76],[124.88,11.78],[124.82,11.85],[124.8,11.9],[124.75,11.93],[124.68,12.02],[124.57,12.06],[124.53,12.08],[124.44,12.15],[124.39,12.24],[124.33,12.4],[124.29,12.57],[124.57,12.53],[124.84,12.53],[125.15,12.57],[125.24,12.53]]],[[[120.7,13.48],[120.75,13.47],[120.92,13.5],[120.98,13.49],[121.02,13.43],[121.08,13.41],[121.12,13.38],[121.2,13.43],[121.28,13.37],[121.36,13.27],[121.44,13.19],[121.52,13.13],[121.54,13.09],[121.49,13.02],[121.47,12.93],[121.48,12.84],[121.54,12.64],[121.52,12.58],[121.46,12.51],[121.41,12.42],[121.42,12.39],[121.4,12.36],[121.4,12.3],[121.36,12.31],[121.32,12.3],[121.29,12.28],[121.24,12.22],[121.15,12.24],[121.12,12.25],[121.11,12.3],[121.08,12.34],[121.05,12.36],[120.96,12.45],[120.92,12.51],[120.92,12.58],[120.9,12.65],[120.86,12.7],[120.8,12.75],[120.78,12.79],[120.77,12.84],[120.77,12.97],[120.68,13.13],[120.65,13.17],[120.57,13.21],[120.51,13.26],[120.48,13.31],[120.46,13.39],[120.44,13.41],[120.39,13.4],[120.34,13.41],[120.35,13.47],[120.4,13.52],[120.47,13.52],[120.65,13.5],[120.7,13.48]]],[[[126,6.92],[125.99,6.94],[125.96,7.03],[125.9,7.12],[125.82,7.33],[125.77,7.32],[125.69,7.26],[125.67,7.22],[125.66,7.16],[125.64,7.1],[125.54,7.02],[125.46,6.91],[125.4,6.8],[125.38,6.69],[125.43,6.61],[125.49,6.57],[125.56,6.5],[125.59,6.47],[125.67,6.22],[125.67,5.98],[125.61,5.87],[125.46,5.66],[125.35,5.6],[125.29,5.63],[125.24,5.76],[125.23,5.81],[125.27,5.93],[125.27,6.03],[125.23,6.07],[125.19,6.06],[125.18,6.05],[125.08,5.91],[125.03,5.87],[124.97,5.87],[124.93,5.88],[124.64,6],[124.4,6.12],[124.21,6.23],[124.08,6.4],[124.05,6.53],[124.05,6.67],[123.99,6.86],[123.98,6.93],[123.99,6.99],[124.04,7.11],[124.12,7.18],[124.16,7.22],[124.19,7.27],[124.21,7.33],[124.21,7.4],[124.18,7.44],[124.07,7.58],[123.97,7.67],[123.76,7.74],[123.72,7.78],[123.67,7.82],[123.61,7.83],[123.55,7.83],[123.49,7.81],[123.48,7.76],[123.48,7.71],[123.48,7.67],[123.39,7.41],[123.28,7.46],[123.18,7.53],[123.15,7.57],[123.14,7.63],[123.12,7.67],[123.1,7.7],[123.05,7.61],[122.99,7.55],[122.92,7.53],[122.84,7.53],[122.82,7.56],[122.79,7.72],[122.71,7.77],[122.62,7.76],[122.5,7.67],[122.48,7.64],[122.45,7.56],[122.32,7.34],[122.25,7.17],[122.18,7],[122.14,6.95],[122.1,6.91],[122.03,6.93],[121.96,6.97],[121.9,7.07],[121.92,7.2],[121.99,7.28],[122.05,7.36],[122.12,7.66],[122.12,7.77],[122.13,7.81],[122.24,7.94],[122.34,8.03],[122.39,8.05],[122.59,8.09],[122.67,8.13],[122.8,8.13],[122.91,8.16],[123,8.22],[123,8.29],[123,8.36],[123.02,8.4],[123.05,8.43],[123.09,8.48],[123.15,8.52],[123.29,8.54],[123.34,8.57],[123.38,8.62],[123.44,8.7],[123.5,8.68],[123.56,8.65],[123.68,8.62],[123.78,8.55],[123.85,8.43],[123.86,8.38],[123.88,8.19],[123.85,8.15],[123.75,8.06],[123.8,8.05],[123.93,8.13],[124,8.16],[124.16,8.2],[124.2,8.23],[124.22,8.27],[124.28,8.39],[124.33,8.51],[124.36,8.56],[124.4,8.6],[124.45,8.61],[124.62,8.52],[124.73,8.56],[124.76,8.69],[124.79,8.87],[124.81,8.92],[124.87,8.97],[124.94,8.96],[125.05,8.89],[125.14,8.87],[125.18,8.92],[125.21,9.03],[125.25,9.03],[125.38,8.99],[125.5,9.01],[125.54,9.14],[125.51,9.28],[125.41,9.67],[125.47,9.76],[125.52,9.76],[125.64,9.65],[125.88,9.51],[125.96,9.43],[126,9.34]]],[[[121.1,18.62],[121.25,18.56],[121.59,18.38],[121.72,18.33],[121.85,18.29],[121.95,18.29],[122.04,18.33],[122.08,18.37],[122.15,18.49],[122.22,18.5],[122.27,18.46],[122.3,18.4],[122.32,18.32],[122.3,18.23],[122.22,18.16],[122.18,18.06],[122.15,17.76],[122.15,17.66],[122.18,17.58],[122.24,17.44],[122.27,17.4],[122.36,17.35],[122.39,17.31],[122.39,17.24],[122.41,17.18],[122.47,17.16],[122.52,17.12],[122.5,17.06],[122.47,16.99],[122.42,16.82],[122.23,16.44],[122.22,16.35],[122.14,16.19],[121.97,16.16],[121.79,16.08],[121.69,16.02],[121.6,15.93],[121.56,15.83],[121.59,15.78],[121.61,15.73],[121.61,15.67],[121.58,15.62],[121.49,15.51],[121.45,15.42],[121.41,15.37],[121.39,15.32],[121.4,15.27],[121.43,15.22],[121.54,15],[121.66,14.79],[121.69,14.77],[121.69,14.74],[121.63,14.68],[121.63,14.58],[121.65,14.48],[121.75,14.23],[121.77,14.17],[121.8,14.11],[121.85,14.06],[121.91,14.02],[122.08,13.95],[122.14,13.93],[122.21,13.93],[122.23,13.98],[122.29,14],[122.27,14.04],[122.2,14.11],[122.2,14.15],[122.24,14.18],[122.28,14.19],[122.39,14.26],[122.49,14.32],[122.63,14.32],[122.76,14.28],[122.86,14.25],[122.94,14.19],[123.02,14.08],[123.07,13.96],[123.07,13.9],[123.06,13.85],[123.06,13.79],[123.1,13.75],[123.23,13.75],[123.3,13.84],[123.31,13.94],[123.26,13.98],[123.28,14.02],[123.32,14.06],[123.38,14.03],[123.43,13.97],[123.63,13.9],[123.68,13.9],[123.72,13.89],[123.81,13.84],[123.86,13.8],[123.81,13.72],[123.61,13.7],[123.55,13.65],[123.61,13.53],[123.7,13.43],[123.76,13.35],[123.82,13.27],[123.82,13.19],[123.79,13.11],[123.87,13.12],[123.95,13.1],[124.07,13.03],[124.11,13.03],[124.14,13.04],[124.14,12.79],[124.06,12.57],[123.96,12.6],[123.88,12.69],[123.89,12.81],[123.95,12.92],[123.92,12.94],[123.86,12.93],[123.8,12.91],[123.74,12.9],[123.63,12.91],[123.4,13.03],[123.31,13.04],[123.29,13.1],[123.3,13.22],[123.21,13.35],[123.19,13.4],[123.16,13.44],[122.9,13.59],[122.86,13.62],[122.78,13.74],[122.59,13.91],[122.54,13.93],[122.49,13.93],[122.47,13.89],[122.49,13.82],[122.5,13.76],[122.5,13.7],[122.51,13.66],[122.6,13.56],[122.61,13.52],[122.67,13.4],[122.68,13.25],[122.6,13.19],[122.51,13.26],[122.51,13.31],[122.5,13.36],[122.41,13.49],[122.38,13.52],[122.21,13.65],[122.07,13.79],[121.78,13.94],[121.74,13.95],[121.69,13.93],[121.64,13.92],[121.5,13.84],[121.45,13.79],[121.45,13.71],[121.34,13.65],[121.2,13.64],[121.1,13.68],[121.01,13.76],[120.93,13.76],[120.84,13.89],[120.73,13.9],[120.64,13.81],[120.62,13.99],[120.62,14.19],[120.64,14.24],[120.69,14.29],[120.92,14.49],[120.95,14.56],[120.94,14.65],[120.89,14.71],[120.8,14.76],[120.71,14.78],[120.64,14.82],[120.59,14.88],[120.55,14.77],[120.58,14.6],[120.59,14.48],[120.56,14.44],[120.5,14.44],[120.44,14.45],[120.4,14.49],[120.37,14.61],[120.28,14.68],[120.25,14.79],[120.21,14.81],[120.14,14.8],[120.08,14.85],[120.05,14.98],[120.04,15.11],[120.01,15.23],[119.96,15.34],[119.93,15.43],[119.89,15.84],[119.88,15.87],[119.86,15.91],[119.81,15.95],[119.77,16.01],[119.76,16.06],[119.77,16.25],[119.79,16.3],[119.83,16.33],[119.89,16.29],[119.93,16.24],[119.98,16.21],[120.03,16.19],[120.12,16.07],[120.16,16.05],[120.27,16.05],[120.34,16.07],[120.37,16.11],[120.39,16.16],[120.39,16.22],[120.33,16.4],[120.3,16.53],[120.3,16.65],[120.32,16.76],[120.41,16.96],[120.42,17.09],[120.41,17.27],[120.43,17.38],[120.42,17.44],[120.37,17.53],[120.36,17.64],[120.51,18.16],[120.55,18.26],[120.59,18.37],[120.6,18.51],[120.71,18.55],[120.82,18.6],[120.87,18.6],[120.92,18.58],[121.05,18.61],[121.1,18.62]]],[[[96.49,5.23],[96.62,5.22],[96.84,5.27],[96.97,5.27],[97.08,5.23],[97.19,5.21],[97.45,5.24],[97.5,5.23],[97.55,5.21],[97.59,5.17],[97.71,5.04],[97.91,4.88],[97.97,4.78],[98,4.66],[98.02,4.64],[98.25,4.42],[98.27,4.32],[98.24,4.19],[98.31,4.09],[98.52,4],[96.3,4],[96.23,4.07],[95.99,4.26],[95.58,4.66],[95.5,4.76],[95.43,4.86],[95.38,4.98],[95.21,5.28],[95.22,5.35],[95.25,5.41],[95.24,5.46],[95.22,5.52],[95.23,5.56],[95.28,5.59],[95.4,5.63],[95.52,5.63],[95.63,5.61],[95.74,5.58],[95.84,5.51],[96.03,5.35],[96.13,5.29],[96.25,5.27],[96.49,5.23]]],[[[116.81,6.69],[116.79,6.61],[116.81,6.61],[116.91,6.66],[117.02,6.8],[117.08,6.92],[117.13,6.97],[117.23,6.94],[117.25,6.92],[117.24,6.83],[117.25,6.78],[117.29,6.68],[117.38,6.61],[117.5,6.57],[117.61,6.51],[117.65,6.47],[117.67,6.43],[117.69,6.35],[117.69,6.27],[117.61,6.2],[117.65,6.07],[117.64,6],[117.62,5.94],[117.5,5.88],[117.82,5.94],[117.9,5.97],[118,6.05],[118.06,5.98],[118.12,5.86],[118.07,5.83],[117.94,5.79],[117.93,5.77],[117.97,5.71],[118.03,5.71],[118.14,5.75],[118.25,5.82],[118.3,5.82],[118.35,5.81],[118.46,5.76],[118.51,5.73],[118.56,5.68],[118.59,5.59],[118.71,5.56],[118.96,5.43],[119,5.42],[119.05,5.42],[119.18,5.43],[119.22,5.41],[119.26,5.37],[119.27,5.31],[119.26,5.25],[119.25,5.2],[119.22,5.16],[119.13,5.1],[118.91,5.02],[118.67,4.96],[118.55,4.97],[118.38,5.02],[118.32,5.01],[118.26,4.99],[118.18,4.83],[118.32,4.67],[118.56,4.5],[118.59,4.46],[118.59,4.41],[118.55,4.38],[118.5,4.36],[118.36,4.34],[118.23,4.32],[118.12,4.29],[118.01,4.25],[117.9,4.26],[117.74,4.34],[117.7,4.34],[117.65,4.3],[117.6,4.2],[117.56,4.16],[117.5,4.13],[117.46,4.08],[117.55,4],[113.71,4],[113.71,4],[113.92,4.24],[113.95,4.29],[113.99,4.42],[113.99,4.48],[113.98,4.55],[114.01,4.57],[114.05,4.59],[114.18,4.59],[114.3,4.61],[114.43,4.66],[114.54,4.72],[114.64,4.8],[114.74,4.88],[114.84,4.95],[114.99,5.02],[115.05,5.02],[115.05,4.96],[115.03,4.9],[115.14,4.9],[115.38,4.93],[115.43,4.97],[115.52,5.05],[115.56,5.09],[115.58,5.19],[115.47,5.25],[115.42,5.33],[115.42,5.41],[115.56,5.57],[115.6,5.6],[115.62,5.55],[115.69,5.54],[115.74,5.53],[115.8,5.54],[115.88,5.61],[115.92,5.72],[116.06,5.88],[116.11,6],[116.14,6.13],[116.5,6.52],[116.54,6.58],[116.75,6.98],[116.78,6.99],[116.83,6.95],[116.85,6.83],[116.84,6.77],[116.81,6.69]]],[[[121.01,22.62],[120.95,22.5],[120.9,22.38],[120.88,22.26],[120.88,22.14],[120.87,22.03],[120.84,21.92],[120.74,21.96],[120.69,22.03],[120.68,22.16],[120.61,22.31],[120.58,22.36],[120.48,22.44],[120.39,22.49],[120.32,22.55],[120.33,22.54],[120.27,22.63],[120.23,22.72],[120.15,22.97],[120.12,23.04],[120.08,23.09],[120.07,23.15],[120.08,23.21],[120.12,23.3],[120.14,23.4],[120.12,23.53],[120.13,23.65],[120.16,23.71],[120.63,24.48],[120.76,24.64],[120.84,24.72],[120.9,24.81],[120.96,24.93],[121.04,25.03],[121.1,25.07],[121.37,25.16],[121.45,25.25],[121.52,25.28],[121.59,25.28],[121.64,25.23],[121.69,25.18],[121.73,25.15],[121.85,25.1],[121.91,25.06],[121.93,24.97],[121.86,24.89],[121.82,24.82],[121.81,24.75],[121.83,24.64],[121.83,24.53],[121.74,24.29],[121.64,24.13],[121.61,24.05],[121.58,23.86],[121.52,23.67],[121.48,23.42],[121.4,23.17],[121.35,23.07],[121.29,22.97],[121.16,22.78],[121.01,22.62]]],[[[110.89,19.99],[110.94,19.95],[110.97,19.88],[111,19.77],[111.01,19.66],[110.91,19.59],[110.82,19.56],[110.64,19.29],[110.6,19.21],[110.57,19.17],[110.56,19.13],[110.57,19.1],[110.52,18.97],[110.48,18.81],[110.45,18.75],[110.4,18.7],[110.33,18.67],[110.29,18.67],[110.25,18.66],[110.16,18.57],[110.05,18.5],[110.07,18.48],[110.07,18.45],[110.02,18.42],[109.97,18.42],[109.82,18.4],[109.76,18.35],[109.7,18.26],[109.68,18.25],[109.59,18.23],[109.52,18.22],[109.4,18.28],[109.34,18.3],[109.18,18.33],[109.03,18.37],[108.92,18.42],[108.7,18.54],[108.68,18.75],[108.64,18.87],[108.64,18.91],[108.65,19.27],[108.67,19.3],[108.69,19.34],[108.79,19.42],[108.9,19.48],[109.06,19.61],[109.18,19.67],[109.28,19.76],[109.22,19.76],[109.18,19.77],[109.22,19.84],[109.26,19.88],[109.31,19.9],[109.42,19.89],[109.51,19.9],[109.58,19.97],[109.65,19.98],[109.91,19.96],[110.08,19.99],[110.17,20.05],[110.21,20.06],[110.34,20.04],[110.39,19.98],[110.39,20.02],[110.39,20.06],[110.42,20.05],[110.59,19.98],[110.59,20.07],[110.6,20.1],[110.65,20.14],[110.68,20.14],[110.75,20.06],[110.81,20.02],[110.89,19.99]]],[[[121.66,30],[121.68,29.98],[121.81,29.95],[121.95,29.89],[122.02,29.89],[122.08,29.87],[121.91,29.78],[121.68,29.58],[121.58,29.54],[121.51,29.48],[121.69,29.51],[121.82,29.6],[121.89,29.63],[121.94,29.61],[121.97,29.49],[121.92,29.13],[121.85,29.13],[121.79,29.23],[121.72,29.26],[121.65,29.24],[121.54,29.24],[121.49,29.19],[121.45,29.13],[121.52,29.12],[121.67,29.01],[121.68,28.95],[121.64,28.92],[121.54,28.93],[121.66,28.85],[121.63,28.77],[121.59,28.73],[121.52,28.71],[121.47,28.64],[121.54,28.52],[121.6,28.37],[121.61,28.29],[121.51,28.32],[121.36,28.23],[121.27,28.22],[121.22,28.35],[121.15,28.33],[121.1,28.29],[121.04,28.16],[120.96,28.04],[120.89,28],[120.81,28.01],[120.75,28.01],[120.77,27.98],[120.83,27.94],[120.83,27.89],[120.69,27.75],[120.66,27.69],[120.66,27.64],[120.59,27.58],[120.63,27.48],[120.61,27.41],[120.54,27.32],[120.47,27.26],[120.38,27.16],[120.28,27.1],[120.14,26.89],[120.1,26.78],[120.09,26.67],[120.04,26.63],[119.97,26.59],[119.88,26.61],[119.88,26.68],[119.84,26.69],[119.82,26.74],[119.81,26.8],[119.83,26.85],[119.79,26.83],[119.77,26.78],[119.71,26.73],[119.65,26.75],[119.59,26.79],[119.59,26.73],[119.62,26.68],[119.64,26.62],[119.72,26.61],[119.79,26.55],[119.83,26.45],[119.84,26.41],[119.88,26.37],[119.88,26.33],[119.8,26.3],[119.69,26.24],[119.57,26.13],[119.46,26.05],[119.37,26.05],[119.31,26.06],[119.23,26.1],[119.14,26.12],[119.26,25.97],[119.33,25.95],[119.42,25.95],[119.5,26.01],[119.62,26],[119.65,25.92],[119.62,25.82],[119.55,25.7],[119.54,25.59],[119.62,25.44],[119.62,25.39],[119.59,25.37],[119.5,25.41],[119.42,25.46],[119.34,25.45],[119.26,25.47],[119.18,25.45],[119.14,25.41],[119.17,25.35],[119.24,25.31],[119.29,25.23],[119.23,25.21],[119.03,25.22],[118.98,25.21],[118.91,25.13],[118.95,25],[118.91,24.93],[118.82,24.91],[118.71,24.85],[118.64,24.84],[118.64,24.81],[118.69,24.78],[118.72,24.75],[118.66,24.62],[118.56,24.58],[118.41,24.6],[118.3,24.57],[118.19,24.63],[118.09,24.63],[118.01,24.56],[118.01,24.48],[117.94,24.47],[117.9,24.48],[117.84,24.47],[117.85,24.43],[117.88,24.4],[118.03,24.38],[118.05,24.33],[118.06,24.25],[117.9,24.11],[117.84,24.01],[117.74,24.01],[117.67,23.94],[117.63,23.84],[117.58,23.86],[117.47,23.84],[117.43,23.79],[117.46,23.77],[117.46,23.74],[117.42,23.62],[117.37,23.59],[117.34,23.64],[117.33,23.71],[117.29,23.71],[117.23,23.65],[117.15,23.6],[117.08,23.58],[117.03,23.62],[116.91,23.65],[116.86,23.45],[116.76,23.38],[116.71,23.36],[116.63,23.35],[116.68,23.33],[116.7,23.28],[116.67,23.23],[116.59,23.22],[116.54,23.18],[116.52,23.01],[116.47,22.95],[116.34,22.94],[116.25,22.98],[116.22,22.95],[116.21,22.92],[116.16,22.89],[116.06,22.88],[115.85,22.8],[115.76,22.82],[115.64,22.85],[115.56,22.82],[115.53,22.76],[115.5,22.72],[115.38,22.72],[115.29,22.78],[115.2,22.82],[115.09,22.78],[115.01,22.71],[114.91,22.68],[114.9,22.64],[114.85,22.62],[114.75,22.63],[114.71,22.74],[114.65,22.75],[114.59,22.7],[114.57,22.65],[114.54,22.62],[114.55,22.53],[114.5,22.53],[114.42,22.58],[114.34,22.59],[114.27,22.54],[114.29,22.5],[114.28,22.46],[114.32,22.44],[114.34,22.4],[114.29,22.37],[114.29,22.33],[114.27,22.3],[114.14,22.35],[114.03,22.38],[113.94,22.37],[113.9,22.4],[113.9,22.43],[114.01,22.48],[114.01,22.51],[113.93,22.53],[113.83,22.61],[113.76,22.73],[113.66,22.8],[113.62,22.86],[113.6,22.97],[113.59,23.02],[113.59,23.08],[113.62,23.13],[113.52,23.1],[113.45,23.05],[113.46,23],[113.44,22.94],[113.33,22.91],[113.34,22.89],[113.35,22.86],[113.43,22.79],[113.45,22.73],[113.49,22.69],[113.55,22.59],[113.55,22.4],[113.59,22.35],[113.58,22.3],[113.55,22.22],[113.5,22.2],[113.42,22.18],[113.37,22.16],[113.33,22.15],[113.27,22.09],[113.15,22.08],[113.09,22.21],[113.01,22.12],[112.99,21.94],[112.95,21.91],[112.9,21.88],[112.81,21.95],[112.73,21.9],[112.66,21.86],[112.63,21.82],[112.59,21.78],[112.5,21.82],[112.42,21.88],[112.44,21.93],[112.43,21.96],[112.39,21.98],[112.36,21.98],[112.38,21.92],[112.39,21.8],[112.36,21.77],[112.3,21.74],[112.19,21.76],[112.12,21.81],[112.02,21.84],[111.94,21.85],[111.93,21.78],[111.87,21.72],[111.83,21.71],[111.78,21.72],[111.71,21.66],[111.68,21.61],[111.6,21.56],[111.39,21.54],[111.32,21.49],[111.22,21.49],[111.15,21.48],[111.1,21.49],[111.06,21.51],[111.02,21.51],[111,21.43],[110.88,21.4],[110.77,21.39],[110.65,21.28],[110.57,21.21],[110.5,21.21],[110.46,21.23],[110.43,21.33],[110.41,21.34],[110.4,21.25],[110.38,21.17],[110.33,21.13],[110.2,21.04],[110.16,20.94],[110.18,20.86],[110.36,20.84],[110.39,20.79],[110.37,20.75],[110.32,20.72],[110.31,20.67],[110.51,20.52],[110.52,20.46],[110.49,20.43],[110.45,20.36],[110.35,20.29],[110.12,20.26],[109.94,20.29],[109.88,20.36],[109.89,20.41],[109.93,20.4],[109.98,20.4],[109.97,20.45],[109.95,20.48],[109.86,20.51],[109.79,20.62],[109.81,20.71],[109.77,20.78],[109.73,20.84],[109.68,20.87],[109.66,20.92],[109.71,21.05],[109.68,21.13],[109.76,21.23],[109.78,21.34],[109.92,21.38],[109.93,21.48],[109.83,21.48],[109.76,21.56],[109.74,21.53],[109.69,21.53],[109.59,21.67],[109.57,21.69],[109.52,21.69],[109.54,21.54],[109.44,21.48],[109.35,21.45],[109.22,21.44],[109.15,21.43],[109.08,21.44],[109.1,21.49],[109.13,21.54],[109.1,21.59],[109.03,21.63],[108.92,21.62],[108.85,21.63],[108.77,21.63],[108.74,21.65],[108.68,21.72],[108.61,21.77],[108.59,21.82],[108.61,21.87],[108.59,21.9],[108.48,21.9],[108.48,21.83],[108.49,21.74],[108.52,21.67],[108.5,21.63],[108.45,21.61],[108.38,21.68],[108.36,21.7],[108.32,21.69],[108.3,21.62],[108.25,21.56],[108.15,21.57],[108.07,21.53],[107.97,21.51],[107.93,21.5],[107.81,21.5],[107.71,21.41],[107.64,21.37],[107.53,21.34],[107.41,21.28],[107.38,21.19],[107.37,21.13],[107.35,21.05],[107.16,20.95],[107.11,20.96],[107.07,21],[107.02,20.99],[106.98,20.97],[106.94,20.97],[106.89,20.95],[106.82,20.96],[106.76,20.99],[106.72,21],[106.68,21],[106.67,20.96],[106.74,20.81],[106.75,20.74],[106.55,20.53],[106.57,20.39],[106.52,20.29],[106.4,20.21],[106.17,19.99],[106.06,19.99],[105.98,19.94],[105.81,19.59],[105.81,19.47],[105.79,19.38],[105.79,19.29],[105.72,19.13],[105.64,19.06],[105.62,18.97],[105.73,18.78],[105.75,18.75],[105.81,18.65],[105.84,18.57],[105.89,18.5],[106.07,18.32],[106.15,18.26],[106.24,18.22],[106.41,18.05],[106.5,17.95],[106.46,17.87],[106.48,17.72],[106.35,17.77],[106.37,17.75],[106.52,17.66],[106.74,17.37],[106.93,17.22],[107.12,17.06],[107.18,16.9],[107.35,16.79],[107.55,16.64],[107.54,16.61],[107.59,16.57],[107.73,16.49],[107.8,16.4],[107.83,16.32],[107.88,16.31],[107.94,16.33],[107.99,16.34],[108.03,16.33],[108.09,16.24],[108.17,16.16],[108.21,16.09],[108.24,16.1],[108.27,16.09],[108.27,16.03],[108.29,15.99],[108.4,15.87],[108.45,15.76],[108.58,15.58],[108.67,15.48],[108.74,15.43],[108.82,15.38],[108.9,15.18],[108.94,15],[109.02,14.8],[109.09,14.72],[109.09,14.55],[109.14,14.38],[109.19,14.27],[109.21,14.15],[109.22,14.1],[109.24,14.05],[109.3,13.86],[109.29,13.77],[109.25,13.85],[109.25,13.59],[109.29,13.45],[109.27,13.28],[109.31,13.22],[109.38,13.03],[109.42,12.96],[109.42,12.72],[109.45,12.6],[109.38,12.67],[109.33,12.75],[109.27,12.71],[109.22,12.65],[109.31,12.39],[109.21,12.41],[109.22,12.07],[109.26,11.99],[109.26,11.95],[109.25,11.91],[109.22,11.96],[109.22,12.01],[109.2,12],[109.2,11.97],[109.17,11.91],[109.16,11.84],[109.19,11.77],[109.2,11.73],[109.17,11.66],[109.13,11.6],[109.04,11.59],[109.02,11.47],[108.99,11.34],[108.82,11.32],[108.7,11.2],[108.55,11.16],[108.42,11.04],[108.27,10.93],[108.18,10.92],[108.1,10.9],[108,10.72],[107.84,10.7],[107.56,10.56],[107.47,10.49],[107.38,10.46],[107.26,10.4],[107.24,10.42],[107.19,10.47],[107.09,10.5],[107.03,10.56],[107.02,10.63],[107.01,10.66],[106.98,10.62],[106.97,10.44],[106.95,10.4],[106.9,10.38],[106.81,10.43],[106.73,10.54],[106.61,10.47],[106.64,10.46],[106.7,10.46],[106.74,10.44],[106.78,10.38],[106.78,10.34],[106.76,10.3],[106.64,10.29],[106.49,10.3],[106.47,10.3],[106.6,10.23],[106.73,10.19],[106.79,10.15],[106.79,10.12],[106.71,10.06],[106.66,9.99],[106.66,9.95],[106.66,9.9],[106.6,9.86],[106.56,9.87],[106.45,9.94],[106.14,10.22],[106.18,10.14],[106.51,9.82],[106.56,9.72],[106.57,9.64],[106.54,9.6],[106.48,9.56],[106.38,9.56],[106.2,9.68],[105.93,9.96],[105.83,10],[106.11,9.67],[106.16,9.59],[106.21,9.5],[106.19,9.45],[106.17,9.4],[105.5,9.09],[105.4,8.96],[105.32,8.8],[105.19,8.71],[105.12,8.63],[104.89,8.58],[104.77,8.6],[104.9,8.75],[104.82,8.8],[104.81,9.19],[104.85,9.61],[104.9,9.82],[104.99,9.87],[105.09,9.9],[105.09,9.94],[105.08,10],[105.03,10.07],[104.96,10.1],[104.87,10.11],[104.8,10.2],[104.75,10.2],[104.66,10.17],[104.61,10.21],[104.59,10.27],[104.51,10.34],[104.43,10.41],[104.26,10.54],[103.94,10.59],[103.9,10.64],[103.87,10.65],[103.84,10.58],[103.66,10.51],[103.59,10.55],[103.53,10.6],[103.54,10.67],[103.59,10.72],[103.68,10.76],[103.72,10.89],[103.65,11.06],[103.6,11.11],[103.53,11.15],[103.47,11.08],[103.41,10.98],[103.36,10.92],[103.27,10.91],[103.15,10.91],[103.11,11.07],[103.09,11.21],[103.11,11.37],[103.12,11.46],[103.01,11.59],[103,11.71],[102.95,11.77],[102.93,11.74],[102.93,11.71],[102.91,11.7],[102.88,11.77],[102.79,11.89],[102.76,12.01],[102.65,12.15],[102.6,12.2],[102.57,12.16],[102.54,12.11],[102.43,12.18],[102.34,12.25],[102.26,12.39],[102.25,12.36],[102.23,12.33],[102.13,12.44],[102.03,12.53],[101.94,12.56],[101.89,12.59],[101.84,12.64],[101.72,12.69],[101.44,12.62],[101.09,12.67],[100.95,12.62],[100.9,12.65],[100.86,12.72],[100.9,12.82],[100.9,13.03],[100.95,13.19],[100.93,13.3],[100.95,13.36],[100.96,13.43],[100.91,13.46],[100.66,13.52],[100.6,13.57],[100.54,13.51],[100.23,13.48],[100.12,13.44],[100.02,13.35],[99.99,13.24],[100.05,13.17],[100.09,13.04],[99.98,12.77],[99.96,12.69],[100.01,12.35],[99.99,12.17],[99.93,12.05],[99.84,11.94],[99.8,11.75],[99.73,11.66],[99.63,11.46],[99.56,11.22],[99.51,11.1],[99.49,10.89],[99.28,10.57],[99.24,10.39],[99.16,10.32],[99.19,10.27],[99.19,10.18],[99.17,9.93],[99.16,9.73],[99.19,9.63],[99.29,9.41],[99.27,9.35],[99.25,9.27],[99.33,9.23],[99.4,9.21],[99.72,9.31],[99.83,9.29],[99.88,9.19],[99.91,9.11],[99.96,8.67],[99.99,8.59],[100.06,8.51],[100.13,8.43],[100.15,8.44],[100.16,8.47],[100.16,8.51],[100.23,8.43],[100.28,8.27],[100.45,7.44],[100.5,7.34],[100.54,7.23],[100.44,7.28],[100.41,7.46],[100.38,7.54],[100.34,7.55],[100.28,7.55],[100.28,7.58],[100.32,7.64],[100.32,7.72],[100.26,7.77],[100.16,7.73],[100.16,7.6],[100.21,7.5],[100.37,7.28],[100.42,7.19],[100.49,7.16],[100.59,7.18],[100.7,7.08],[100.79,6.99],[101.02,6.86],[101.16,6.88],[101.3,6.91],[101.4,6.9],[101.5,6.86],[101.61,6.75],[101.8,6.47],[102.1,6.24],[102.28,6.2],[102.34,6.17],[102.53,5.86],[102.79,5.64],[102.9,5.56],[102.98,5.52],[103.1,5.41],[103.2,5.26],[103.42,4.85],[103.45,4.67],[103.47,4.39],[103.42,4],[100.75,4],[100.76,4],[100.8,4.02],[100.76,4.1],[100.66,4.23],[100.62,4.37],[100.62,4.65],[100.48,5.04],[100.35,5.59],[100.37,5.78],[100.34,5.98],[100.26,6.18],[100.16,6.32],[100.12,6.44],[99.87,6.75],[99.7,6.88],[99.72,7.11],[99.67,7.15],[99.6,7.15],[99.55,7.22],[99.6,7.36],[99.53,7.33],[99.43,7.34],[99.36,7.37],[99.3,7.56],[99.26,7.62],[99.18,7.72],[99.08,7.72],[99.04,7.77],[99.05,7.89],[98.97,7.96],[98.87,8.02],[98.79,8.06],[98.7,8.26],[98.64,8.31],[98.58,8.34],[98.5,8.32],[98.47,8.25],[98.42,8.18],[98.36,8.19],[98.3,8.23],[98.24,8.42],[98.23,8.54],[98.24,8.77],[98.33,8.97],[98.37,9.29],[98.44,9.49],[98.49,9.56],[98.56,9.84],[98.7,10.19],[98.66,10.18],[98.56,10.03],[98.52,10.11],[98.5,10.18],[98.52,10.35],[98.47,10.68],[98.5,10.72],[98.53,10.74],[98.6,10.86],[98.68,10.99],[98.68,11.13],[98.74,11.24],[98.73,11.33],[98.73,11.44],[98.75,11.52],[98.74,11.59],[98.79,11.66],[98.88,11.72],[98.84,11.74],[98.8,11.78],[98.69,11.72],[98.64,11.74],[98.62,11.8],[98.64,11.87],[98.65,11.91],[98.69,11.96],[98.69,12.05],[98.66,12.13],[98.7,12.23],[98.63,12.23],[98.6,12.24],[98.62,12.3],[98.68,12.35],[98.62,12.44],[98.66,12.54],[98.66,12.66],[98.64,12.77],[98.64,12.85],[98.6,12.99],[98.57,13.16],[98.49,13.29],[98.42,13.48],[98.25,13.73],[98.25,13.84],[98.24,13.93],[98.2,13.98],[98.15,13.65],[98.11,13.71],[98.1,13.9],[98.07,13.99],[98.1,14.16],[98,14.33],[97.98,14.46],[97.91,14.65],[97.93,14.7],[98.02,14.65],[97.94,14.76],[97.87,14.74],[97.81,14.86],[97.8,15.19],[97.74,15.31],[97.78,15.43],[97.71,15.88],[97.58,16.02],[97.61,16.14],[97.64,16.25],[97.63,16.46],[97.66,16.52],[97.72,16.57],[97.67,16.55],[97.62,16.54],[97.51,16.53],[97.38,16.52],[97.33,16.67],[97.27,16.74],[97.21,16.89],[97.18,17.06],[97.2,17.1],[97.1,17.16],[97.07,17.21],[96.97,17.32],[96.85,17.4],[96.88,17.34],[96.91,17.31],[96.85,17.2],[96.91,17.03],[96.86,16.92],[96.81,16.78],[96.77,16.71],[96.62,16.56],[96.51,16.51],[96.43,16.5],[96.36,16.52],[96.28,16.6],[96.26,16.66],[96.25,16.77],[96.22,16.78],[96.19,16.77],[96.24,16.63],[96.24,16.57],[96.32,16.44],[96.29,16.41],[96.13,16.34],[96.08,16.35],[96.04,16.34],[96.03,16.28],[96.01,16.25],[95.76,16.17],[95.71,16.07],[95.68,15.98],[95.55,15.84],[95.39,15.72],[95.35,15.73],[95.3,15.76],[95.31,15.88],[95.36,15.99],[95.35,16.1],[95.33,16.03],[95.23,15.88],[95.18,15.83],[95.08,15.84],[94.94,15.82],[94.89,15.98],[94.89,16.04],[94.88,16.09],[94.9,16.14],[94.89,16.18],[94.86,16.1],[94.85,16.03],[94.8,15.97],[94.66,15.9],[94.66,15.99],[94.65,16.07],[94.68,16.13],[94.68,16.24],[94.72,16.4],[94.72,16.45],[94.7,16.51],[94.68,16.42],[94.66,16.34],[94.64,16.31],[94.59,16.29],[94.5,16.19],[94.44,16.1],[94.3,16.01],[94.23,16.02],[94.21,16.13],[94.27,16.52],[94.33,16.57],[94.36,16.64],[94.4,16.87],[94.45,16.95],[94.47,17.13],[94.5,17.17],[94.56,17.31],[94.59,17.57],[94.56,17.7],[94.5,17.82],[94.43,18.2],[94.27,18.51],[94.25,18.61],[94.17,18.73],[94.25,18.74],[94.09,18.85],[94.07,18.89],[94.04,19.15],[94.05,19.29],[94.02,19.27],[94,19.18],[94,19.18],[94,30]]],[[[114.23,22.21],[114.21,22.2],[114.14,22.27],[114.13,22.29],[114.19,22.3],[114.25,22.26],[114.25,22.23],[114.23,22.21]]],[[[121.16,6.07],[121.22,6],[121.28,6.02],[121.39,6],[121.41,5.96],[121.41,5.94],[121.29,5.87],[121.22,5.94],[121.08,5.89],[121.02,5.92],[120.93,5.9],[120.88,5.95],[120.9,6.01],[121.04,6.1],[121.16,6.07]]],[[[117.36,8.22],[117.29,8.19],[117.27,8.25],[117.28,8.31],[117.33,8.31],[117.35,8.29],[117.36,8.22]]],[[[117.08,7.88],[117.03,7.81],[116.97,7.89],[116.97,8.02],[116.99,8.05],[117.08,8.07],[117.08,7.88]]],[[[119.92,10.49],[119.79,10.45],[119.76,10.55],[119.85,10.64],[119.95,10.6],[120.01,10.57],[119.98,10.54],[119.92,10.49]]],[[[119.86,11.53],[119.88,11.47],[119.85,11.39],[119.83,11.37],[119.8,11.41],[119.73,11.43],[119.72,11.47],[119.76,11.47],[119.83,11.52],[119.86,11.53]]],[[[120.1,12.17],[120.15,12.15],[120.19,12.17],[120.23,12.22],[120.26,12.14],[120.34,12.08],[120.32,12.01],[120.24,12.01],[120.17,12.02],[120.1,11.99],[120.01,12.01],[119.96,12.07],[119.9,12.18],[119.86,12.2],[119.87,12.24],[119.89,12.27],[119.88,12.28],[119.89,12.3],[119.9,12.31],[119.92,12.32],[119.96,12.27],[120.08,12.2],[120.1,12.17]]],[[[120.04,11.7],[119.96,11.67],[119.94,11.69],[119.93,11.74],[119.93,11.77],[119.86,11.95],[119.92,11.98],[119.95,11.96],[120,11.93],[120.03,11.92],[120.07,11.86],[120.06,11.82],[120.07,11.78],[120.04,11.7]]],[[[122.65,10.47],[122.62,10.46],[122.6,10.46],[122.54,10.43],[122.52,10.49],[122.54,10.61],[122.63,10.69],[122.65,10.72],[122.67,10.74],[122.7,10.74],[122.73,10.71],[122.74,10.65],[122.68,10.5],[122.65,10.47]]],[[[123.37,9.45],[123.33,9.42],[123.32,9.49],[123.33,9.58],[123.4,9.89],[123.39,9.97],[123.52,10.14],[123.59,10.3],[123.71,10.47],[123.73,10.56],[123.83,10.73],[123.93,10.96],[123.93,11.04],[123.95,11.08],[123.97,11.14],[123.97,11.19],[124.04,11.27],[124.06,11.22],[124.04,11.11],[124.04,11.05],[124.05,11.03],[124.05,10.93],[124.03,10.77],[124.05,10.59],[124.01,10.4],[123.95,10.32],[123.88,10.26],[123.79,10.22],[123.7,10.13],[123.65,10.02],[123.63,9.92],[123.49,9.59],[123.37,9.45]]],[[[123.76,11.28],[123.81,11.15],[123.74,11.15],[123.71,11.25],[123.74,11.28],[123.76,11.28]]],[[[124.6,9.79],[124.58,9.75],[124.51,9.75],[124.48,9.75],[124.4,9.65],[124.36,9.63],[124.12,9.6],[123.94,9.62],[123.87,9.68],[123.83,9.76],[123.82,9.82],[123.86,9.88],[123.91,9.92],[124.06,10],[124.1,10.06],[124.17,10.14],[124.34,10.16],[124.35,10.14],[124.37,10.13],[124.4,10.13],[124.49,10.07],[124.58,10.03],[124.56,9.88],[124.58,9.83],[124.6,9.79]]],[[[124.81,9.14],[124.78,9.08],[124.67,9.13],[124.64,9.18],[124.65,9.23],[124.71,9.24],[124.74,9.24],[124.79,9.19],[124.81,9.14]]],[[[123.7,9.24],[123.71,9.13],[123.62,9.1],[123.54,9.13],[123.49,9.19],[123.49,9.22],[123.53,9.21],[123.63,9.27],[123.66,9.28],[123.7,9.24]]],[[[120.25,5.26],[120.23,5.2],[120.19,5.17],[120.15,5.18],[120.12,5.22],[120.1,5.17],[120.01,5.15],[119.96,5.08],[119.88,5.06],[119.82,5.07],[119.83,5.13],[119.98,5.23],[120.08,5.26],[120.16,5.33],[120.21,5.34],[120.23,5.28],[120.25,5.26]]],[[[122.09,6.43],[121.99,6.42],[121.96,6.42],[121.88,6.52],[121.87,6.56],[121.81,6.61],[121.83,6.66],[121.91,6.68],[122.06,6.74],[122.29,6.64],[122.32,6.6],[122.25,6.58],[122.2,6.48],[122.09,6.43]]],[[[126,9.83],[125.99,9.84],[126,9.93],[126,9.93]]],[[[125.69,9.91],[125.67,9.89],[125.65,9.94],[125.59,10],[125.54,10.09],[125.5,10.12],[125.52,10.19],[125.52,10.31],[125.58,10.36],[125.61,10.38],[125.65,10.44],[125.67,10.44],[125.69,10.39],[125.65,10.24],[125.7,10.07],[125.68,9.96],[125.69,9.94],[125.69,9.91]]],[[[120.27,13.75],[120.27,13.68],[120.1,13.78],[120.1,13.82],[120.1,13.84],[120.12,13.86],[120.21,13.82],[120.27,13.75]]],[[[121.91,13.54],[121.98,13.54],[122,13.55],[122.12,13.46],[122.11,13.42],[122.12,13.36],[122.05,13.27],[122.04,13.24],[122,13.2],[121.88,13.28],[121.83,13.33],[121.82,13.43],[121.87,13.57],[121.91,13.54]]],[[[122.09,12.35],[122.01,12.11],[121.96,12.19],[121.98,12.24],[121.94,12.29],[121.92,12.33],[121.94,12.39],[121.99,12.44],[122,12.6],[122.1,12.65],[122.14,12.65],[122.13,12.61],[122.13,12.54],[122.09,12.35]]],[[[122.31,12.53],[122.28,12.5],[122.26,12.5],[122.25,12.56],[122.28,12.59],[122.29,12.59],[122.31,12.53]]],[[[122.66,12.31],[122.6,12.29],[122.5,12.38],[122.44,12.43],[122.42,12.45],[122.47,12.49],[122.6,12.49],[122.67,12.42],[122.68,12.38],[122.66,12.31]]],[[[123.28,12.85],[123.37,12.7],[123.27,12.81],[123.17,12.88],[123.05,12.99],[122.97,13.03],[122.95,13.06],[122.96,13.11],[123.02,13.12],[123.04,13.11],[123.21,12.91],[123.28,12.85]]],[[[123.77,12.45],[123.78,12.37],[123.74,12.4],[123.62,12.57],[123.59,12.63],[123.62,12.68],[123.71,12.61],[123.77,12.45]]],[[[123.72,12.29],[123.91,12.17],[124.04,11.97],[124.06,11.81],[124.04,11.75],[123.98,11.82],[123.85,11.91],[123.75,11.93],[123.72,11.95],[123.74,12],[123.67,12.05],[123.67,12.07],[123.61,12.09],[123.53,12.2],[123.47,12.22],[123.42,12.19],[123.29,12.04],[123.16,11.93],[123.16,11.97],[123.21,12.11],[123.25,12.33],[123.27,12.4],[123.24,12.49],[123.23,12.58],[123.34,12.54],[123.46,12.5],[123.56,12.44],[123.57,12.41],[123.72,12.29]]],[[[124.35,13.63],[124.33,13.57],[124.29,13.59],[124.25,13.59],[124.17,13.53],[124.06,13.61],[124.04,13.66],[124.12,13.79],[124.12,13.98],[124.15,14.03],[124.19,14.06],[124.22,14.08],[124.31,13.95],[124.34,13.93],[124.42,13.87],[124.4,13.75],[124.4,13.68],[124.35,13.63]]],[[[122.18,14.05],[122.17,14.01],[121.96,14.16],[121.95,14.18],[121.95,14.2],[121.96,14.23],[122.18,14.05]]],[[[122.03,15],[122.05,14.97],[122.03,14.97],[122.02,14.96],[121.97,14.89],[122.02,14.76],[121.99,14.66],[121.93,14.66],[121.91,14.67],[121.92,14.71],[121.94,14.74],[121.92,14.8],[121.89,14.84],[121.86,14.92],[121.82,14.96],[121.84,15.04],[121.97,15.05],[122.03,15]]],[[[121.92,18.9],[121.86,18.82],[121.82,18.84],[121.86,18.91],[121.86,18.94],[121.89,18.99],[121.94,19.01],[121.99,18.96],[121.92,18.9]]],[[[121.25,19.08],[121.25,19.02],[121.2,19.05],[121.19,19.1],[121.19,19.14],[121.21,19.18],[121.24,19.14],[121.25,19.08]]],[[[121.52,19.36],[121.53,19.27],[121.47,19.27],[121.38,19.33],[121.37,19.36],[121.38,19.38],[121.39,19.4],[121.52,19.36]]],[[[121.96,20.37],[121.94,20.35],[121.91,20.36],[121.94,20.45],[121.99,20.48],[122.03,20.47],[121.96,20.37]]],[[[121.88,20.78],[121.83,20.7],[121.79,20.7],[121.8,20.75],[121.85,20.84],[121.87,20.84],[121.88,20.78]]],[[[117.92,4.05],[117.74,4],[117.63,4.12],[117.67,4.2],[117.66,4.25],[117.71,4.26],[117.76,4.25],[117.88,4.19],[117.92,4.09],[117.92,4.05]]],[[[108,4],[108,4.04],[108.2,4.2],[108.25,4.22],[108.25,4.15],[108.38,4]]],[[[95.36,5.81],[95.34,5.78],[95.28,5.8],[95.22,5.89],[95.24,5.91],[95.28,5.9],[95.36,5.88],[95.37,5.84],[95.36,5.81]]],[[[117.14,7.17],[117.08,7.11],[117.06,7.18],[117.06,7.26],[117.15,7.34],[117.27,7.35],[117.28,7.29],[117.27,7.22],[117.24,7.18],[117.14,7.17]]],[[[124.29,24.52],[124.24,24.36],[124.19,24.34],[124.13,24.35],[124.08,24.44],[124.12,24.47],[124.17,24.45],[124.21,24.46],[124.3,24.59],[124.33,24.57],[124.29,24.52]]],[[[123.89,24.28],[123.83,24.27],[123.75,24.28],[123.68,24.29],[123.68,24.32],[123.75,24.35],[123.75,24.39],[123.77,24.41],[123.94,24.36],[123.93,24.32],[123.89,24.28]]],[[[125.45,24.74],[125.36,24.72],[125.27,24.73],[125.28,24.87],[125.32,24.85],[125.33,24.8],[125.4,24.78],[125.45,24.74]]],[[[118.41,24.52],[118.45,24.46],[118.43,24.41],[118.3,24.44],[118.29,24.48],[118.34,24.47],[118.41,24.52]]],[[[118.18,24.5],[118.15,24.44],[118.09,24.45],[118.09,24.49],[118.08,24.5],[118.09,24.54],[118.1,24.55],[118.17,24.52],[118.18,24.5]]],[[[122.3,29.96],[122.28,29.94],[122.16,30],[122.31,30],[122.3,29.96]]],[[[122.17,29.68],[122.17,29.66],[122.08,29.72],[122.04,29.74],[122.06,29.77],[122.12,29.78],[122.17,29.7],[122.17,29.68]]],[[[122.4,29.89],[122.4,29.85],[122.37,29.85],[122.33,29.93],[122.35,29.96],[122.4,29.95],[122.4,29.89]]],[[[119.82,25.46],[119.75,25.41],[119.7,25.43],[119.7,25.5],[119.72,25.55],[119.7,25.59],[119.72,25.64],[119.78,25.65],[119.8,25.62],[119.83,25.61],[119.84,25.59],[119.84,25.56],[119.81,25.51],[119.83,25.48],[119.82,25.46]]],[[[110.39,21.09],[110.42,21.06],[110.52,21.08],[110.54,21.04],[110.54,21.02],[110.5,20.97],[110.42,21.01],[110.34,21],[110.28,21],[110.26,21.03],[110.31,21.07],[110.39,21.09]]],[[[107.6,21.22],[107.46,21.09],[107.41,21.09],[107.45,21.24],[107.48,21.27],[107.56,21.22],[107.6,21.22]]],[[[107.52,20.93],[107.47,20.9],[107.4,20.9],[107.48,20.95],[107.52,21.01],[107.55,21.03],[107.55,20.98],[107.52,20.93]]],[[[107.03,20.75],[106.99,20.74],[106.91,20.82],[106.95,20.87],[107.05,20.84],[107.06,20.82],[107.06,20.8],[107.04,20.76],[107.03,20.75]]],[[[106.87,20.82],[106.85,20.8],[106.8,20.84],[106.77,20.86],[106.8,20.93],[106.85,20.86],[106.87,20.82]]],[[[106.62,8.68],[106.59,8.68],[106.57,8.7],[106.66,8.77],[106.65,8.72],[106.65,8.7],[106.62,8.68]]],[[[104.06,10.39],[104.08,10.34],[104.08,10.23],[104.04,10.11],[104.05,10.06],[104.02,10.03],[103.95,10.24],[103.87,10.34],[103.85,10.37],[103.9,10.37],[103.99,10.43],[104.03,10.43],[104.06,10.39]]],[[[103.05,11.28],[103.03,11.28],[103.01,11.28],[102.99,11.29],[103,11.35],[103.01,11.38],[103.04,11.39],[103.05,11.28]]],[[[102.61,11.68],[102.59,11.57],[102.53,11.61],[102.55,11.67],[102.57,11.69],[102.61,11.68]]],[[[102.43,11.99],[102.43,11.97],[102.38,11.98],[102.36,11.97],[102.3,11.98],[102.27,12.12],[102.28,12.15],[102.32,12.14],[102.38,12.07],[102.41,12.03],[102.43,11.99]]],[[[100.29,5.3],[100.26,5.27],[100.19,5.28],[100.21,5.45],[100.24,5.47],[100.31,5.44],[100.34,5.41],[100.29,5.3]]],[[[99.85,6.47],[99.92,6.36],[99.88,6.31],[99.87,6.3],[99.82,6.31],[99.78,6.27],[99.74,6.26],[99.7,6.34],[99.66,6.37],[99.65,6.42],[99.71,6.43],[99.75,6.41],[99.82,6.44],[99.85,6.47]]],[[[99.66,6.52],[99.64,6.52],[99.61,6.6],[99.65,6.71],[99.7,6.57],[99.66,6.52]]],[[[100.08,9.7],[100.06,9.68],[100.03,9.71],[100,9.75],[99.98,9.79],[100.04,9.79],[100.07,9.75],[100.08,9.7]]],[[[100.07,9.59],[100.08,9.53],[100.05,9.46],[99.96,9.42],[99.93,9.48],[99.94,9.56],[99.95,9.58],[100.04,9.58],[100.07,9.59]]],[[[98.59,7.93],[98.58,7.92],[98.53,8.11],[98.6,8.06],[98.59,7.93]]],[[[98.41,7.9],[98.4,7.83],[98.36,7.83],[98.32,7.78],[98.3,7.78],[98.26,7.93],[98.3,8.14],[98.32,8.17],[98.35,8.11],[98.43,8.09],[98.4,7.97],[98.41,7.9]]],[[[98.31,9.05],[98.25,9.04],[98.26,9.1],[98.27,9.13],[98.3,9.14],[98.31,9.08],[98.31,9.05]]],[[[98.54,10.96],[98.52,10.96],[98.5,10.96],[98.48,10.98],[98.53,11.09],[98.54,10.96]]],[[[98.21,10.95],[98.29,10.78],[98.28,10.75],[98.27,10.74],[98.25,10.74],[98.22,10.84],[98.16,10.9],[98.08,10.89],[98.14,10.96],[98.17,10.98],[98.21,10.95]]],[[[98.18,9.93],[98.14,9.88],[98.12,9.88],[98.14,9.97],[98.22,10.05],[98.29,10.05],[98.28,10.01],[98.23,9.95],[98.18,9.93]]],[[[98.22,11.48],[98.22,11.46],[98.21,11.46],[98.19,11.47],[98.2,11.57],[98.24,11.64],[98.28,11.76],[98.3,11.78],[98.31,11.72],[98.28,11.59],[98.26,11.52],[98.22,11.48]]],[[[98.52,11.9],[98.47,11.9],[98.46,12.06],[98.47,12.08],[98.52,12.01],[98.61,11.96],[98.58,11.93],[98.52,11.9]]],[[[98.07,11.69],[98.08,11.64],[98.02,11.7],[98.01,11.86],[98.06,11.76],[98.08,11.73],[98.07,11.69]]],[[[98.55,11.74],[98.53,11.54],[98.47,11.57],[98.43,11.57],[98.4,11.68],[98.4,11.72],[98.38,11.79],[98.52,11.81],[98.55,11.74]]],[[[98.14,12.15],[98.12,12.15],[98.11,12.15],[98.07,12.16],[98.04,12.23],[98.06,12.28],[98.07,12.29],[98.11,12.29],[98.12,12.28],[98.13,12.26],[98.12,12.22],[98.12,12.19],[98.14,12.15]]],[[[98.07,12.39],[98.06,12.35],[98,12.28],[97.95,12.32],[97.94,12.35],[97.99,12.39],[98.05,12.39],[98.06,12.4],[98.07,12.39]]],[[[98.41,12.6],[98.44,12.57],[98.47,12.57],[98.46,12.47],[98.38,12.35],[98.33,12.34],[98.32,12.34],[98.33,12.51],[98.3,12.61],[98.31,12.68],[98.4,12.65],[98.41,12.6]]],[[[98.32,13.1],[98.31,12.93],[98.26,13.01],[98.25,13.1],[98.25,13.19],[98.26,13.2],[98.27,13.19],[98.3,13.15],[98.32,13.1]]],[[[97.57,16.25],[97.54,16.24],[97.48,16.31],[97.47,16.46],[97.52,16.5],[97.54,16.5],[97.58,16.49],[97.59,16.46],[97.6,16.43],[97.59,16.4],[97.57,16.25]]],[[[99.08,7.59],[99.1,7.47],[99.07,7.5],[99.04,7.55],[99.04,7.63],[99.05,7.64],[99.08,7.59]]],[[[94.81,15.82],[94.78,15.79],[94.74,15.81],[94.73,15.82],[94.83,15.93],[94.84,15.89],[94.81,15.82]]],[[[94.48,15.95],[94.41,15.85],[94.39,15.99],[94.5,16.08],[94.55,16.15],[94.6,16.21],[94.62,16.14],[94.57,16.02],[94.48,15.95]]],[[[124.31,10.61],[124.29,10.6],[124.34,10.71],[124.37,10.69],[124.38,10.68],[124.38,10.63],[124.31,10.61]]],[[[125.28,9.98],[125.29,9.93],[125.16,10.06],[125.13,10.15],[125.18,10.15],[125.23,10.12],[125.28,9.98]]],[[[122.94,7.41],[122.95,7.39],[122.94,7.36],[122.84,7.31],[122.81,7.32],[122.8,7.39],[122.82,7.43],[122.87,7.4],[122.91,7.43],[122.94,7.41]]],[[[125.78,6.96],[125.77,6.91],[125.71,7.04],[125.68,7.07],[125.72,7.19],[125.78,7.13],[125.78,6.96]]],[[[125.97,9.59],[125.95,9.57],[125.92,9.62],[125.95,9.74],[125.97,9.76],[125.99,9.68],[125.97,9.59]]],[[[124.61,11.49],[124.48,11.49],[124.43,11.53],[124.36,11.67],[124.44,11.69],[124.51,11.69],[124.57,11.64],[124.62,11.55],[124.61,11.49]]],[[[124.85,11.6],[124.84,11.54],[124.81,11.56],[124.78,11.58],[124.74,11.66],[124.73,11.72],[124.79,11.68],[124.82,11.63],[124.85,11.6]]],[[[121.25,28.09],[121.16,28.06],[121.13,28.06],[121.13,28.14],[121.2,28.2],[121.23,28.18],[121.25,28.14],[121.25,28.09]]],[[[113.55,22.8],[113.56,22.76],[113.49,22.83],[113.46,22.83],[113.42,22.86],[113.4,22.9],[113.46,22.9],[113.52,22.85],[113.55,22.8]]],[[[112.79,21.6],[112.77,21.58],[112.74,21.62],[112.73,21.67],[112.71,21.7],[112.76,21.73],[112.78,21.77],[112.84,21.76],[112.86,21.75],[112.81,21.71],[112.8,21.7],[112.79,21.6]]],[[[112.64,21.64],[112.55,21.62],[112.52,21.62],[112.56,21.67],[112.65,21.71],[112.64,21.64]]],[[[114,22.21],[113.88,22.21],[113.85,22.22],[113.84,22.24],[113.88,22.28],[114.04,22.33],[114,22.28],[114,22.21]]],[[[107.17,10.4],[107.08,10.34],[107.08,10.39],[107.15,10.42],[107.17,10.45],[107.2,10.45],[107.17,10.4]]],[[[103.32,10.72],[103.28,10.68],[103.22,10.76],[103.22,10.78],[103.32,10.72]]]],"th":[[[[102,14.8],[102,12.5373],[101.9908,12.5399],[101.9728,12.5416],[101.962,12.5366],[101.962,12.5805],[101.9584,12.5906],[101.9548,12.6007],[101.9512,12.6058],[101.9476,12.6024],[101.9476,12.5957],[101.9368,12.5889],[101.9332,12.5838],[101.9476,12.5399],[101.9476,12.5298],[101.9152,12.5551],[101.9008,12.5703],[101.8936,12.5838],[101.9116,12.5771],[101.908,12.594],[101.9008,12.5973],[101.8936,12.5973],[101.8864,12.5973],[101.8792,12.6058],[101.872,12.6125],[101.872,12.621],[101.8648,12.6328],[101.8504,12.6548],[101.8288,12.6733],[101.8072,12.6885],[101.782,12.7003],[101.7676,12.7054],[101.7028,12.7071],[101.6848,12.702],[101.6776,12.6885],[101.6668,12.6733],[101.6596,12.6598],[101.6416,12.6514],[101.6236,12.6497],[101.5804,12.6531],[101.5732,12.6497],[101.5732,12.6429],[101.5732,12.6362],[101.5696,12.6328],[101.566,12.6311],[101.5552,12.6328],[101.5408,12.6311],[101.5084,12.6396],[101.4652,12.6328],[101.4436,12.6244],[101.4328,12.6159],[101.4292,12.5973],[101.4184,12.5957],[101.3932,12.6125],[101.3248,12.6429],[101.2492,12.6598],[101.0872,12.6801],[101.0656,12.6767],[101.0332,12.6564],[100.99,12.6497],[100.9792,12.6396],[100.9756,12.6227],[100.9756,12.5973],[100.9252,12.6193],[100.9252,12.626],[100.9396,12.6362],[100.936,12.6531],[100.918,12.6632],[100.9,12.6531],[100.8892,12.6581],[100.8784,12.6581],[100.8712,12.6548],[100.8568,12.6531],[100.864,12.6564],[100.8676,12.6598],[100.8712,12.6666],[100.8712,12.6733],[100.8496,12.6733],[100.8532,12.6801],[100.8604,12.6953],[100.864,12.7003],[100.8568,12.702],[100.8388,12.7071],[100.8532,12.7527],[100.8676,12.7713],[100.8856,12.7628],[100.8928,12.7628],[100.9,12.773],[100.9072,12.7831],[100.9144,12.7932],[100.9216,12.8101],[100.918,12.827],[100.9144,12.8405],[100.9072,12.854],[100.8676,12.9064],[100.864,12.9199],[100.8676,12.9283],[100.8748,12.9351],[100.8856,12.9401],[100.8928,12.9486],[100.8928,12.9553],[100.8964,12.9739],[100.9,12.9823],[100.9072,12.9773],[100.918,12.9823],[100.9288,12.9925],[100.9324,13.0026],[100.9324,13.0262],[100.9216,13.0431],[100.9108,13.0566],[100.9072,13.0752],[100.9,13.0803],[100.8928,13.0837],[100.882,13.087],[100.8784,13.0989],[100.9,13.1259],[100.9144,13.1546],[100.936,13.1833],[100.9468,13.2002],[100.9432,13.2204],[100.9324,13.2559],[100.9288,13.266],[100.9144,13.2863],[100.9108,13.293],[100.9144,13.3049],[100.918,13.3116],[100.9252,13.315],[100.9324,13.3386],[100.9468,13.3437],[100.9648,13.3488],[100.9828,13.3589],[100.9864,13.3724],[100.9864,13.396],[100.9864,13.418],[100.972,13.4366],[100.9792,13.4585],[100.9972,13.4889],[100.9972,13.4957],[100.9828,13.4872],[100.9756,13.4788],[100.9648,13.472],[100.9504,13.4686],[100.8892,13.4686],[100.864,13.472],[100.8136,13.4855],[100.7704,13.4906],[100.7488,13.5007],[100.6804,13.5092],[100.648,13.521],[100.6084,13.548],[100.5904,13.5548],[100.5904,13.5615],[100.5904,13.5717],[100.5976,13.5835],[100.5976,13.597],[100.5976,13.6122],[100.5868,13.5919],[100.5832,13.5767],[100.5832,13.5345],[100.576,13.5193],[100.5544,13.5109],[100.4284,13.4889],[100.3816,13.4923],[100.3564,13.4889],[100.3384,13.4822],[100.2916,13.5058],[100.2736,13.5159],[100.2664,13.4974],[100.252,13.4855],[100.2376,13.4771],[100.1512,13.4433],[100.1116,13.4366],[100.09,13.4264],[100.0684,13.418],[100.054,13.4129],[100.0396,13.4028],[100.0324,13.3825],[100.0216,13.3673],[100,13.3724],[100.0144,13.3656],[100.0144,13.3488],[100.0072,13.3336],[99.9928,13.3217],[99.9784,13.3167],[99.964,13.3099],[99.9604,13.293],[99.9604,13.2913],[99.9676,13.2593],[100,13.2187],[100.0576,13.1698],[100.0612,13.1664],[100.0684,13.1596],[100.0756,13.1529],[100.0756,13.1428],[100.0792,13.1343],[100.0864,13.0955],[100.1044,13.0566],[100.1008,13.0398],[100.0936,13.0246],[100.0612,12.9807],[100.054,12.9655],[100.0432,12.9334],[100.0288,12.8625],[100.0252,12.8473],[99.9892,12.7898],[99.9748,12.751],[99.964,12.7105],[99.9604,12.6683],[99.9604,12.6362],[99.9604,12.626],[99.9784,12.5602],[99.982,12.5399],[99.9784,12.4775],[99.982,12.4538],[100.0108,12.3829],[100.0108,12.3694],[100.0036,12.3542],[99.982,12.2799],[99.982,12.2698],[99.9928,12.2596],[100,12.2495],[100.0108,12.2411],[100.0144,12.2309],[100.018,12.2107],[100.018,12.2022],[100.0216,12.1921],[100.0144,12.1803],[100.0108,12.1752],[99.9928,12.1634],[99.9892,12.1532],[99.982,12.1178],[99.9784,12.1077],[99.9568,12.0722],[99.856,11.9692],[99.8308,11.9253],[99.8236,11.878],[99.838,11.8442],[99.8344,11.8375],[99.82,11.8358],[99.8128,11.8324],[99.8092,11.824],[99.8092,11.8138],[99.8118,11.8],[99,11.8],[99,14.8]]]],"tw":[[[[119.8061,25.5],[119.8074,25.4964],[119.8398,25.4795],[119.847,25.4609],[119.8218,25.4677],[119.8,25.4638],[119.8,25.5]]],[[[121.5642,22.0449],[121.5822,22.0314],[121.5894,22.023],[121.5894,22.0145],[121.5678,22.0078],[121.539,22.0179],[121.5138,22.0348],[121.4994,22.0483],[121.503,22.0568],[121.503,22.0669],[121.4994,22.0753],[121.4922,22.0821],[121.5678,22.0821],[121.5678,22.0753],[121.5642,22.072],[121.5606,22.0635],[121.5606,22.0534],[121.5642,22.0449]]],[[[121.4598,22.6596],[121.4562,22.6731],[121.4562,22.6765],[121.4958,22.6781],[121.4994,22.6765],[121.503,22.6697],[121.4994,22.6562],[121.4958,22.6494],[121.4958,22.6444],[121.4958,22.6393],[121.4958,22.6342],[121.4922,22.6359],[121.485,22.6359],[121.4814,22.6359],[121.4814,22.6376],[121.4706,22.641],[121.4598,22.6596]]],[[[120.0234,23.4515],[120.0738,23.5005],[120.117,23.5478],[120.1242,23.5511],[120.0918,23.4988],[120.0738,23.4836],[120.063,23.4718],[120.0486,23.4583],[120.0378,23.4515],[120.0198,23.438],[120.009,23.4329],[120.0234,23.4515]]],[[[121.9062,24.9493],[121.8342,24.8716],[121.8234,24.8547],[121.8162,24.8311],[121.809,24.8058],[121.8054,24.7787],[121.809,24.7534],[121.8198,24.6994],[121.8198,24.6859],[121.8126,24.6724],[121.8162,24.6437],[121.827,24.6234],[121.8522,24.6082],[121.881,24.6048],[121.881,24.5981],[121.8702,24.5998],[121.8594,24.5981],[121.8486,24.5947],[121.8414,24.5896],[121.8522,24.5727],[121.8558,24.5508],[121.8522,24.5305],[121.8306,24.5187],[121.827,24.5103],[121.8306,24.5001],[121.8378,24.4917],[121.8414,24.4816],[121.8306,24.4731],[121.8054,24.4613],[121.7802,24.4326],[121.7802,24.4225],[121.7802,24.3971],[121.7766,24.3887],[121.773,24.3802],[121.7694,24.3701],[121.7658,24.3482],[121.7658,24.3414],[121.7622,24.3363],[121.7586,24.333],[121.7622,24.3262],[121.7658,24.3228],[121.7694,24.3178],[121.773,24.3127],[121.773,24.3093],[121.7658,24.3009],[121.7442,24.2806],[121.7226,24.2519],[121.7046,24.2384],[121.6974,24.2316],[121.701,24.2249],[121.6974,24.2198],[121.6722,24.2012],[121.6614,24.1928],[121.6506,24.1725],[121.6398,24.1303],[121.6146,24.0915],[121.6074,24.0763],[121.6074,24.0611],[121.6146,24.0425],[121.6218,24.0341],[121.6254,24.0307],[121.629,24.0256],[121.629,24.0155],[121.6254,24.002],[121.611,23.9817],[121.6074,23.9699],[121.6074,23.948],[121.593,23.8922],[121.5714,23.8314],[121.539,23.693],[121.521,23.6592],[121.4778,23.4346],[121.4634,23.3434],[121.4526,23.3266],[121.4274,23.2928],[121.4166,23.2759],[121.4094,23.254],[121.4022,23.2151],[121.4022,23.1797],[121.3986,23.1459],[121.3806,23.1104],[121.3734,23.1037],[121.3554,23.0919],[121.3482,23.0834],[121.3446,23.075],[121.3374,23.0547],[121.3194,23.026],[121.3086,22.9804],[121.2978,22.9585],[121.2618,22.9078],[121.2546,22.8977],[121.2042,22.8571],[121.1898,22.8436],[121.1898,22.8335],[121.1898,22.8115],[121.1898,22.8014],[121.1862,22.7913],[121.179,22.7795],[121.161,22.7575],[121.143,22.7423],[121.0818,22.7035],[121.0386,22.663],[121.0278,22.6579],[121.0206,22.6478],[121.0026,22.6005],[120.9918,22.5836],[120.9594,22.5481],[120.9486,22.5262],[120.9414,22.484],[120.9234,22.4249],[120.8874,22.3658],[120.8802,22.3455],[120.8766,22.2898],[120.8766,22.2374],[120.8802,22.0551],[120.873,22.0297],[120.8622,22.0095],[120.8514,22.001],[120.837,21.9875],[120.837,21.9571],[120.8406,21.925],[120.8406,21.9048],[120.8226,21.9284],[120.7974,21.947],[120.7686,21.9588],[120.7362,21.9656],[120.7362,21.9436],[120.729,21.9352],[120.7146,21.9369],[120.7002,21.9487],[120.7002,21.9571],[120.7038,21.9808],[120.6822,22.0145],[120.6822,22.023],[120.6822,22.0297],[120.6822,22.0416],[120.6822,22.0787],[120.6858,22.0905],[120.6966,22.1023],[120.6966,22.1125],[120.621,22.2948],[120.6138,22.305],[120.5922,22.3286],[120.5778,22.3641],[120.5706,22.3742],[120.5382,22.3962],[120.5274,22.4029],[120.5238,22.4046],[120.5166,22.4063],[120.513,22.4198],[120.513,22.4249],[120.495,22.435],[120.459,22.4519],[120.441,22.462],[120.423,22.4772],[120.4122,22.4823],[120.4014,22.4873],[120.3978,22.4857],[120.3906,22.484],[120.3798,22.484],[120.333,22.5194],[120.2862,22.5802],[120.333,22.5262],[120.3294,22.5515],[120.3186,22.565],[120.315,22.5768],[120.2934,22.5988],[120.2574,22.6275],[120.2466,22.6427],[120.2394,22.6596],[120.2466,22.6748],[120.2538,22.69],[120.2466,22.7102],[120.2358,22.7305],[120.2178,22.7575],[120.1998,22.793],[120.1962,22.8082],[120.1962,22.8183],[120.2034,22.8318],[120.2034,22.8403],[120.1998,22.8436],[120.1962,22.847],[120.1926,22.8521],[120.189,22.8605],[120.1782,22.8774],[120.1746,22.8842],[120.1674,22.9314],[120.1638,22.9534],[120.1566,22.9669],[120.1422,22.9804],[120.1602,22.9922],[120.171,23.0142],[120.1674,23.0311],[120.1422,23.0344],[120.1386,23.0277],[120.135,23.0159],[120.1278,23.0074],[120.1134,23.0074],[120.1098,23.0159],[120.1098,23.0395],[120.1062,23.0479],[120.0918,23.0547],[120.0846,23.0479],[120.0774,23.0378],[120.0666,23.0344],[120.0558,23.0429],[120.0522,23.0564],[120.0558,23.0682],[120.0594,23.0767],[120.0702,23.0817],[120.0846,23.0834],[120.0954,23.0868],[120.099,23.0969],[120.0954,23.102],[120.0594,23.1104],[120.0594,23.1172],[120.0882,23.1172],[120.0846,23.1273],[120.0702,23.1391],[120.0594,23.151],[120.063,23.1645],[120.0702,23.1695],[120.081,23.1729],[120.0882,23.1813],[120.0846,23.1965],[120.0774,23.2067],[120.081,23.2168],[120.0882,23.2303],[120.0954,23.2388],[120.0954,23.2472],[120.0954,23.2556],[120.1098,23.286],[120.1134,23.2928],[120.1242,23.2945],[120.1098,23.3029],[120.117,23.3181],[120.1314,23.3181],[120.1422,23.3232],[120.1494,23.3215],[120.1458,23.3333],[120.1386,23.3283],[120.1314,23.3299],[120.1206,23.3299],[120.1206,23.3418],[120.1314,23.3603],[120.1458,23.362],[120.1638,23.362],[120.1494,23.3975],[120.135,23.4262],[120.1422,23.4397],[120.1422,23.4465],[120.1314,23.4515],[120.1314,23.4566],[120.1386,23.465],[120.1422,23.4735],[120.1566,23.492],[120.1242,23.4904],[120.1242,23.5207],[120.1422,23.5376],[120.1422,23.595],[120.1422,23.6373],[120.153,23.6727],[120.171,23.6997],[120.1746,23.7335],[120.1854,23.7639],[120.189,23.774],[120.2142,23.8027],[120.2178,23.8129],[120.2178,23.8179],[120.2394,23.8331],[120.2466,23.8433],[120.2538,23.8686],[120.2574,23.8787],[120.2862,23.9024],[120.2934,23.9125],[120.3042,23.9395],[120.3186,23.9665],[120.3402,24.0223],[120.351,24.0375],[120.3618,24.0493],[120.3726,24.0543],[120.3798,24.0577],[120.387,24.0628],[120.387,24.0729],[120.3906,24.083],[120.4122,24.0966],[120.4158,24.1067],[120.4194,24.1421],[120.423,24.1523],[120.4338,24.1607],[120.477,24.2063],[120.477,24.2097],[120.4806,24.2215],[120.4914,24.23],[120.5022,24.2536],[120.513,24.2958],[120.549,24.3515],[120.5598,24.3853],[120.5706,24.4056],[120.621,24.4562],[120.6498,24.4832],[120.657,24.4984],[120.6606,24.5204],[120.6678,24.5407],[120.6894,24.5761],[120.6966,24.5981],[120.7038,24.6065],[120.729,24.6133],[120.7362,24.6217],[120.7398,24.6301],[120.7434,24.6386],[120.7614,24.6538],[120.7794,24.6656],[120.801,24.6707],[120.8262,24.6656],[120.8226,24.6859],[120.8334,24.6977],[120.8478,24.7112],[120.855,24.7315],[120.8586,24.7365],[120.873,24.7433],[120.8766,24.7619],[120.8982,24.8007],[120.9054,24.8108],[120.909,24.8176],[120.909,24.8226],[120.9054,24.8294],[120.9018,24.8362],[120.909,24.8463],[120.9162,24.853],[120.9198,24.8615],[120.9234,24.875],[120.927,24.8851],[120.9342,24.8953],[120.945,24.902],[120.9522,24.9054],[120.9522,24.9088],[120.9558,24.9189],[120.963,24.9408],[120.9702,24.951],[121.0062,24.9999],[121.0314,25.0286],[121.0602,25.0506],[121.1286,25.0709],[121.1466,25.081],[121.161,25.0911],[121.1754,25.0996],[121.2114,25.1114],[121.287,25.1232],[121.3302,25.13],[121.3482,25.1367],[121.3734,25.1553],[121.377,25.1587],[121.3878,25.1587],[121.3986,25.1587],[121.413,25.1553],[121.4202,25.1468],[121.4238,25.1367],[121.431,25.1317],[121.4418,25.1367],[121.431,25.1553],[121.4058,25.1756],[121.395,25.1823],[121.3986,25.1924],[121.4058,25.1975],[121.413,25.2009],[121.4166,25.2043],[121.4238,25.2211],[121.4346,25.2414],[121.4598,25.2617],[121.4994,25.2786],[121.539,25.287],[121.5822,25.2836],[121.5966,25.2718],[121.6362,25.2228],[121.6506,25.1975],[121.6542,25.1992],[121.665,25.2009],[121.6758,25.2026],[121.683,25.2009],[121.683,25.1975],[121.6794,25.1924],[121.6758,25.1874],[121.6758,25.1789],[121.6794,25.1756],[121.6938,25.1654],[121.6974,25.162],[121.7046,25.157],[121.719,25.1519],[121.8918,25.1131],[121.9062,25.1063],[121.899,25.0945],[121.899,25.0844],[121.899,25.0658],[121.9098,25.0354],[121.9206,25.0219],[121.9278,25.0185],[121.953,25.0219],[121.9674,25.0219],[121.9818,25.0168],[121.9962,25.0101],[122.007,25.0016],[121.9278,24.9662],[121.9062,24.9493]]]]};
+
+/* prec: "ok" = 已用公開資料查證座標；"approx" = 大約位置（誤差可能幾十到幾百公尺） */
+const P = {
+  home:{n:"中和出發點",en:"力霸山河社區（秀朗橋站附近）",ll:[24.9905,121.5251],k:"🏠",prec:"approx",
+    info:"KKday 馳航 7 人座來回接送。地圖只標捷運秀朗橋站附近，詳細上車地址看 KKday 訂單。",q:"捷運秀朗橋站"},
+  tpe:{n:"桃園機場第一航廈",en:"Taoyuan Airport T1",ll:[25.0811,121.2375],k:"✈️",prec:"approx",
+    info:"11/29 07:35 在 T1 華航櫃台集合。",q:"桃園國際機場第一航廈"},
+  bkk:{n:"素萬那普機場",en:"Suvarnabhumi Airport (BKK)",ll:[13.6900,100.7501],k:"✈️",prec:"approx",
+    info:"去程 CI831 13:05 抵達；回程 CI832 14:05 起飛。",q:"Suvarnabhumi Airport"},
+  hlr:{n:"Health Land Resort & Spa",en:"芭達雅飯店（11/29–12/1）",ll:[12.9104789,100.894259],k:"🏨",hotel:true,prec:"ok",
+    src:"Visit Thailand Today",
+    info:"2 座戶外泳池、館內 SPA、健身房（房客免費）。早餐 06:00–10:00。12:00 前退房，Trip.com 寫可免費寄放行李。飯店約 130 m 外有 Health Land Spa 連鎖店（10:00–21:30，泰式 2 小時約 600 泰銖）。",
+    q:"Health Land Resort & Spa Pattaya"},
+  thep:{n:"Thepprasit 夜市",en:"Thepprasit Night Market",ll:[12.9086314,100.8930878],k:"🛍️",prec:"ok",src:"Pattaya.guide",
+    info:"週五至週日才完整營業，11/29 是週日剛好有開。離飯店約 620 m，走路可到。",q:"Thepprasit Night Market Pattaya"},
+  nn:{n:"東芭樂園",en:"Nong Nooch Tropical Garden",ll:[12.7647,100.9358],k:"🌺",prec:"ok",src:"Wikipedia",
+    info:"團體行程。營業時間與停留時間依領隊安排。",q:"Nong Nooch Tropical Garden"},
+  sot:{n:"真理聖殿",en:"Sanctuary of Truth",ll:[12.972871,100.889132],k:"🛕",prec:"ok",src:"Thai Holiday Guide",
+    info:"團體行程。全木造寺院，參觀服裝建議遮肩膝。",q:"Sanctuary of Truth Pattaya"},
+  bh:{n:"Bali Hai 碼頭（推測上船點）",en:"Oriental Carnival 船上自助餐＋表演",ll:[12.9226,100.8699],k:"🚢",prec:"approx",
+    info:"團體行程。網路上 Oriental Carnival 晚餐船寫在 Bali Hai 碼頭報到（梯次 18:00 或 19:30），但團體實際的碼頭與梯次待領隊確認。",q:"Bali Hai Pier Pattaya"},
+  ws:{n:"Walking Street 步行街",en:"Pattaya Walking Street",ll:[12.927456,100.874662],k:"🌃",prec:"ok",src:"Thai Holiday Guide",
+    info:"團體行程。晚上才熱鬧，注意隨身財物。",q:"Walking Street Pattaya"},
+  gcp:{n:"Grande Centre Point Ratchadamri",en:"曼谷飯店（12/1–12/3）",ll:[13.7415,100.5390],k:"🏨",hotel:true,prec:"approx",
+    info:"地址 153/2 Soi Mahatlek Luang 1。泳池、Rarinjinda Spa、三溫暖、健身房。BTS Ratchadamri 走路約 4 分、Chit Lom 約 8 分。12:00 退房，可寄放行李。",
+    q:"Grande Centre Point Ratchadamri"},
+  erawan:{n:"四面佛",en:"Erawan Shrine",ll:[13.7443437,100.5404554],k:"🙏",prec:"ok",src:"Visit Thailand Today",
+    info:"開放 06:00–22:00。供品套組約 200 泰銖起，可買可不買。露肩露膝要遮一下。",q:"Erawan Shrine"},
+  cw:{n:"Central World",en:"CentralWorld",ll:[13.7465,100.5392],k:"🍜",prec:"approx",
+    info:"在四面佛旁，餐廳、美食街很多。營業時間沒查到可靠來源，請用 Google Maps 確認。",q:"CentralWorld Bangkok"},
+  bigc:{n:"Big C（Ratchadamri）",en:"Big C Supercenter Ratchadamri",ll:[13.7476,100.5409],k:"🛒",prec:"approx",
+    info:"買伴手禮。旅行社簡介寫在飯店附近；營業時間未查證，請用 Google Maps 確認。",q:"Big C Ratchadamri"},
+  jodd:{n:"Jodd Fairs 夜市（可選）",en:"Jodd Fairs",ll:[13.76794,100.57121],k:"🎪",prec:"approx",
+    info:"網上寫 16:00–24:00，但資料互相矛盾，地點也有不同說法。出發前一定要用 Google Maps 確認還有沒有開。建議叫 Grab。",q:"Jodd Fairs Bangkok"},
+  wp:{n:"臥佛寺",en:"Wat Pho",ll:[13.746525,100.491661],k:"🛕",prec:"ok",src:"Thai Holiday Guide",
+    info:"開放 08:00–19:30，外國人門票 300 泰銖（團費是否含請問領隊）。不要短褲、無袖、緊身褲，進殿脫鞋。寺內按摩 30 分 340 / 60 分 520 泰銖。",q:"Wat Pho"},
+  icon:{n:"ICONSIAM",en:"暹羅天地",ll:[13.725858,100.509984],k:"🏬",prec:"ok",src:"Thai Holiday Guide",
+    info:"營業 10:00–22:00。G 樓 SookSiam 水上市場小吃、4 樓 Baan Khanitha、6 樓甜點 Wan Pordee／James Boulangerie。河畔水舞通常 19:00、20:00，下雨可能取消。",q:"ICONSIAM"},
+  asia:{n:"Asiatique 河濱夜市",en:"Asiatique The Riverfront",ll:[13.70395,100.50338],k:"🎡",prec:"ok",src:"Thai Holiday Guide",
+    info:"場地 11:00–24:00，大部分店家 16:00–23:00，19:00–21:30 最擠。摩天輪另外收費。免費接駁船到 Sathorn 碼頭，末班約 23:00。",q:"Asiatique The Riverfront"},
+  sathorn:{minor:true,n:"Sathorn 碼頭",en:"Sathorn Pier",ll:[13.7193,100.5131],k:"⛴️",prec:"approx",
+    info:"Asiatique 接駁船下船處。上岸走約 5 分到 BTS Saphan Taksin。",q:"Sathorn Pier"},
+  bts1:{minor:true,n:"BTS Saphan Taksin 站",en:"Silom 線",ll:[13.7188,100.5143],k:"🚆",prec:"approx",
+    info:"搭 Silom 線往 Siam 方向，Ratchadamri 站下車，不用轉車。",q:"BTS Saphan Taksin"},
+  bts2:{minor:true,n:"BTS Ratchadamri 站",en:"Silom 線",ll:[13.7396,100.5395],k:"🚆",prec:"approx",
+    info:"走路約 4 分到飯店。",q:"BTS Ratchadamri"}
+};
+
+/* t: 團體 group / 自由建議 free / 交通 move ； p: 地點（沒有就不在地圖上） ； tbc: 待領隊確認 */
+const DAYS = [
+ {id:"d1",date:"11/29",wd:"日",title:"出發！飛曼谷、晚上住芭達雅",sum:"一早從中和出發，下午抵達曼谷後直接去芭達雅。",
+  items:[
+   {time:"06:15",t:"move",p:"home",w:"KKday 包車出發去機場",note:"7 人座，3 人＋行李"},
+   {time:"07:35",t:"group",p:"tpe",w:"桃機 T1 華航櫃台集合"},
+   {time:"10:05",t:"move",p:"tpe",w:"CI831 起飛",note:"13:05 抵達曼谷（當地時間）"},
+   {time:"13:05",t:"move",p:"bkk",w:"抵達素萬那普機場",note:"午餐自理"},
+   {time:"下午",t:"group",p:"hlr",w:"搭車前往芭達雅",note:"出發與抵達時間",tbc:true},
+   {time:"晚餐",t:"group",w:"德國豬腳餐",note:"餐廳名稱與地點沒有資料，地圖上不標",tbc:true},
+   {time:"晚上",t:"group",p:"hlr",w:"入住 Health Land Resort & Spa"},
+   {time:"晚餐後",t:"free",p:"thep",w:"逛 Thepprasit 夜市（可選）",note:"週日完整營業，飯店走路可到"}
+  ],
+  routes:[["home","tpe","move","car"],["tpe","bkk","move","flight"],["bkk","hlr","group","bus"],["hlr","thep","free","walk"]]},
+ {id:"d2",date:"11/30",wd:"一",title:"芭達雅全日團體行程",sum:"整天跟團。下面的順序照行程表列，實際順序與時間以領隊為準。",
+  items:[
+   {time:"早上",t:"group",p:"hlr",w:"飯店早餐",note:"06:00–10:00"},
+   {time:"待確認",t:"group",p:"nn",w:"東芭樂園",tbc:true},
+   {time:"待確認",t:"group",p:"sot",w:"真理聖殿",tbc:true},
+   {time:"傍晚",t:"group",p:"bh",w:"Oriental Carnival 船上自助餐＋表演",note:"上船碼頭與梯次",tbc:true},
+   {time:"晚上",t:"group",p:"ws",w:"Walking Street 步行街"},
+   {time:"晚上",t:"group",p:"hlr",w:"回飯店休息"}
+  ],
+  routes:[["hlr","nn","group","bus"],["nn","sot","group","bus"],["sot","bh","group","bus"],["bh","ws","group","walk"],["ws","hlr","group","bus"]]},
+ {id:"d3",date:"12/1",wd:"二",title:"早上泡飯店，晚上逛曼谷飯店周邊",sum:"移動日。晚上就在飯店走路範圍內吃飯逛街，不要再跨區。",
+  items:[
+   {time:"07:00",t:"free",p:"hlr",w:"早餐、泳池或健身房",note:"早餐 06:00–10:00"},
+   {time:"待確認",t:"group",p:"hlr",w:"泰式古式按摩（約 2 小時）",note:"小費 100 另付，幣別請問領隊",tbc:true},
+   {time:"10:00 後",t:"free",p:"hlr",w:"或：飯店旁 Health Land Spa",note:"不參加團體按摩才需要；泰式 2 小時約 600 泰銖，Klook 可預購"},
+   {time:"12:00 前",t:"group",p:"hlr",w:"退房、搭車回曼谷",note:"出發時間",tbc:true},
+   {time:"待確認",t:"group",p:"gcp",w:"入住 Grande Centre Point Ratchadamri",note:"抵達時間",tbc:true},
+   {time:"到飯店後",t:"free",p:"gcp",w:"休息、泳池或三溫暖"},
+   {time:"傍晚",t:"free",p:"erawan",w:"四面佛拜拜",note:"06:00–22:00 開放"},
+   {time:"晚餐",t:"free",p:"cw",w:"Central World 吃晚餐、逛街"},
+   {time:"晚上",t:"free",p:"bigc",w:"Big C 買伴手禮"},
+   {time:"可選",t:"free",p:"jodd",w:"Jodd Fairs 夜市",note:"還有體力再去，先查有沒有開"}
+  ],
+  routes:[["hlr","gcp","group","bus"],["gcp","erawan","free","walk"],["erawan","cw","free","walk"],["cw","bigc","free","walk"],["gcp","jodd","free","car"]]},
+ {id:"d4",date:"12/2",wd:"三",title:"臥佛寺、ICONSIAM、Asiatique",sum:"團體在各點的時間與晚上是否統一回飯店都待領隊確認。下面假設上午臥佛寺、中午到傍晚 ICONSIAM、晚上 Asiatique。",
+  items:[
+   {time:"上午",t:"group",p:"wp",w:"臥佛寺",note:"穿長褲、有袖上衣；到達與集合時間",tbc:true},
+   {time:"中午",t:"group",p:"icon",w:"前往 ICONSIAM",note:"到達與集合時間",tbc:true},
+   {time:"午餐",t:"free",p:"icon",w:"SookSiam 水上市場小吃",note:"G 樓，3 個人分著點；想坐著吃選 4 樓 Baan Khanitha"},
+   {time:"午後",t:"free",p:"icon",w:"Let's Relax 按摩 2 小時（自費）",note:"泰式 NT$1,200、精油 NT$2,500，不含小費。早上在臥佛寺按過就跳過"},
+   {time:"下午",t:"free",p:"icon",w:"6 樓甜點",note:"Wan Pordee 或 James Boulangerie（河景）"},
+   {time:"19:00",t:"free",p:"icon",w:"河畔水舞（可選）",note:"免費，下雨可能取消；看團體時間"},
+   {time:"晚上",t:"group",p:"asia",w:"Asiatique 河濱夜市＋晚餐",note:"店家 16:00–23:00"},
+   {time:"23:00 前",t:"free",p:"sathorn",w:"自己回飯店：免費接駁船到 Sathorn 碼頭",note:"末班約 23:00，提早 20 分到碼頭"},
+   {time:"",t:"free",p:"bts1",w:"BTS Saphan Taksin → Ratchadamri",note:"Silom 線直達，不用轉車"},
+   {time:"",t:"free",p:"gcp",w:"走回飯店",note:"約 4 分"}
+  ],
+  routes:[["gcp","wp","group","bus"],["wp","icon","group","bus"],["icon","asia","group","bus"],["asia","sathorn","free","boat"],["sathorn","bts1","free","walk"],["bts1","bts2","free","train"],["bts2","gcp","free","walk"]]},
+ {id:"d5",date:"12/3",wd:"四",title:"早上慢慢來，下午飛回家",sum:"CI832 14:05 起飛，建議約 10:00 離開飯店、11:00 前到機場。",
+  items:[
+   {time:"06:00",t:"free",p:"erawan",w:"四面佛（可選）",note:"06:00 開門，人最少"},
+   {time:"07:00",t:"free",p:"gcp",w:"早餐"},
+   {time:"08:00",t:"free",p:"gcp",w:"泳池、三溫暖或健身房"},
+   {time:"09:00",t:"free",p:"gcp",w:"洗澡、整理行李、退房"},
+   {time:"約 10:00",t:"group",p:"gcp",w:"出發去機場",note:"車程約 45–60 分；團體上車時間",tbc:true},
+   {time:"14:05",t:"move",p:"bkk",w:"CI832 起飛"},
+   {time:"18:40",t:"move",p:"tpe",w:"抵達桃園機場",note:"台灣時間"},
+   {time:"18:40 後",t:"move",p:"home",w:"KKday 包車回中和"}
+  ],
+  routes:[["gcp","erawan","free","walk"],["gcp","bkk","group","bus"],["bkk","tpe","move","flight"],["tpe","home","move","car"]]}
+];
+
+const modeLabel={car:"包車",flight:"飛機",bus:"遊覽車",walk:"走路",boat:"接駁船",train:"BTS"};
+const typeLabel={group:"團體",free:"自由建議",move:"交通"};
+
+/* ---------- map ---------- */
+const map=L.map("map",{zoomControl:true,attributionControl:true,minZoom:4,maxZoom:18,zoomSnap:.5});
+map.attributionControl.setPrefix(false);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const toLL=r=>r.map(([x,y])=>[y,x]);
+const landStyle=()=>({stroke:false,fillColor:css("--land"),fillOpacity:1,interactive:false});
+const coastStyle=()=>({color:css("--coast"),weight:1,fill:false,interactive:false});
+function mkLand(polys){const g=L.layerGroup();polys.forEach(p=>{const rings=p.map(toLL);
+  L.polygon(rings,landStyle()).addTo(g);});return g;}
+const wide=mkLand(LAND.wide), th=mkLand(LAND.th), tw=mkLand(LAND.tw);
+let vectorOn=true;
+function syncLand(){ if(!vectorOn)return; const z=map.getZoom();
+  if(z>=8){map.removeLayer(wide)}else if(!map.hasLayer(wide)){wide.addTo(map);wide.eachLayer(l=>l.bringToBack())}}
+function addVector(){wide.addTo(map);th.addTo(map);tw.addTo(map);
+  map.attributionControl.addAttribution("海岸線 © Natural Earth");
+  const n=document.getElementById("bnote");n.hidden=false;
+  n.textContent="簡化底圖（沒有街道）。點標記可開 Google Maps 看實際位置與導航 📍";}
+/* 先試 OpenStreetMap 街道圖磚；載不到就用內建的簡化海岸線 */
+function tileUrl(){return "https://tile.openstreetmap.org/{z}/{x}/{y}.png";}
+addVector();
+(function tryTiles(){const img=new Image();let done=false;
+  img.onload=()=>{if(done)return;done=true;vectorOn=false;[wide,th,tw].forEach(l=>map.removeLayer(l));
+    document.getElementById("bnote").hidden=true;
+    L.tileLayer(tileUrl(),{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);};
+  img.onerror=()=>{done=true};
+  setTimeout(()=>{done=true},4000);
+  img.src="https://tile.openstreetmap.org/5/25/14.png";})();
+map.on("zoomend",syncLand);
+
+const routeLayer=L.layerGroup().addTo(map);
+const markerLayer=L.layerGroup().addTo(map);
+const markers={};
+
+/* ---------- state ---------- */
+let state={day:"all",show:{group:true,free:true,move:true},active:null};
+try{const s=JSON.parse(localStorage.getItem("bkkmap")||"null");if(s){state.day=s.day||"all";Object.assign(state.show,s.show||{});}}catch(e){}
+function save(){try{localStorage.setItem("bkkmap",JSON.stringify({day:state.day,show:state.show}))}catch(e){}}
+
+function visibleDays(){return state.day==="all"?DAYS:DAYS.filter(d=>d.id===state.day)}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function gmaps(p){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.prec==="ok"?p.ll.join(","):p.q)}
+
+function popupHtml(id,entries){const p=P[id];
+  const sched=entries.map(e=>`<li style="--c:var(--${e.t})"><span class="t">${esc(e.date)} ${esc(e.time||"")}</span><span>${esc(e.w)}${e.tbc?' <span class="tag tbc">待領隊確認</span>':''}</span></li>`).join("");
+  return `<div class="pop"><h3>${p.k} ${esc(p.n)}</h3><div class="en">${esc(p.en)}</div>
+    ${sched?`<ul class="sched">${sched}</ul>`:""}
+    <div>${esc(p.info)}</div>
+    <div class="prec ${p.prec}">${p.prec==="ok"?"📍 座標已查證（來源："+esc(p.src)+"）":"📍 大約位置，實際以 Google Maps 為準"}</div>
+    <a class="btn" href="${gmaps(p)}" target="_blank" rel="noopener">在 Google Maps 開啟</a></div>`;}
+
+function render(){
+  save();
+  document.querySelectorAll(".day").forEach(b=>b.setAttribute("aria-pressed",b.dataset.id===state.day));
+  ["group","free","move"].forEach(t=>document.getElementById({group:"lg",free:"lf",move:"lm"}[t]).setAttribute("aria-pressed",state.show[t]));
+  routeLayer.clearLayers();markerLayer.clearLayers();for(const k in markers)delete markers[k];
+  const days=visibleDays();
+  /* routes */
+  days.forEach(d=>d.routes.forEach(([a,b,t,mode])=>{ if(!state.show[t])return;
+    const col=css("--"+t);
+    const dash=mode==="flight"?"2 8":(t==="free"?"6 6":(t==="move"?"8 6":null));
+    const line=L.polyline([P[a].ll,P[b].ll],{color:col,weight:mode==="flight"?2:3.5,opacity:.85,dashArray:dash,lineCap:"round"});
+    line.bindTooltip(`${modeLabel[mode]}・${typeLabel[t]}（示意直線）`,{sticky:true,className:"lbl"});
+    line.addTo(routeLayer);}));
+  /* markers: collect entries per place */
+  const per={};
+  days.forEach(d=>d.items.forEach(it=>{if(!it.p||!state.show[it.t])return;(per[it.p]=per[it.p]||[]).push({...it,date:d.date});}));
+  const pts=[];
+  Object.entries(per).forEach(([id,entries])=>{const p=P[id];
+    const t=(entries.some(e=>e.t==="group")||(p.hotel&&state.show.group))?"group":(entries.some(e=>e.t==="free")?"free":"move");
+    const icon=L.divIcon({className:"pin-wrap "+t,html:`<div class="pin ${p.hotel?"hotel":""} ${t==="free"?"free":""}">${p.k}</div>`,iconSize:[30,30],iconAnchor:[15,15],popupAnchor:[0,-14]});
+    const m=L.marker(p.ll,{icon,title:p.n,riseOnHover:true}).bindPopup(popupHtml(id,entries),{maxWidth:300,autoPanPadding:[20,20]});
+    m.bindTooltip(p.n,{permanent:!p.minor,direction:"right",offset:[16,0],className:"lbl"});
+    m.addTo(markerLayer);markers[id]=m;pts.push(p.ll);});
+  renderList(days);
+  if(pts.length){const b=L.latLngBounds(pts);map.fitBounds(b,{padding:[40,40],maxZoom:15,animate:false});}
+  else map.setView([13.4,100.7],8);
+  syncLand();
+}
+
+function renderList(days){const el=document.getElementById("list");let h="";
+  days.forEach(d=>{const its=d.items.filter(it=>state.show[it.t]);
+    h+=`<section class="daygroup"><div class="dayhead"><h2>${d.date}（${d.wd}）${esc(d.title)}</h2><p>${esc(d.sum)}</p></div><ul class="timeline">`;
+    if(!its.length)h+=`<li class="empty">這天在目前的圖層下沒有項目，打開上面的圖層看看～</li>`;
+    its.forEach(it=>{const idx=d.items.indexOf(it);
+      h+=`<li><button class="item ${it.t}" data-d="${d.id}" data-i="${idx}" ${it.p?"":"data-nopin"}>
+        <span class="time">${esc(it.time||"·")}</span>
+        <span class="body"><span class="what">${esc(it.w)}</span>
+        ${it.note?`<span class="note">${esc(it.note)}${it.tbc?"：":""}${it.tbc?"<b>待領隊確認</b>":""}</span>`:(it.tbc?`<span class="note"><b>待領隊確認</b></span>`:"")}
+        <span class="tags"><span class="tag ${it.t}">${typeLabel[it.t]}</span>${it.tbc?'<span class="tag tbc">待確認</span>':""}${it.p?"":'<span class="tag nopin">地圖未標</span>'}${it.p&&P[it.p].prec==="approx"?'<span class="tag nopin">大約位置</span>':""}</span></span>
+      </button></li>`;});
+    h+=`</ul></section>`;});
+  h+=`<div class="foot">
+    <div>🔵 實線＝團體行程　🟠 虛線＝自由時間建議　灰色＝自己的交通（包車、飛機）。地圖上的連線是示意直線，不是實際路線。</div>
+    <div>「待領隊確認」的時間請以領隊高毅公布為準。營業時間是 2026/11/18 查到的資料，出發前再用 Google Maps 確認一次。</div>
+    <div>自由時間建議的完整說明：<a href="https://claude.ai/artifact/KkwhwJSFhoUARJ4AUjgGg9" target="_blank" rel="noopener">曼谷芭達雅自由時間行程建議</a></div>
+  </div>`;
+  el.innerHTML=h;}
+
+document.getElementById("list").addEventListener("click",e=>{const b=e.target.closest(".item");if(!b)return;
+  const d=DAYS.find(x=>x.id===b.dataset.d),it=d.items[+b.dataset.i];
+  document.querySelectorAll(".item.active").forEach(x=>x.classList.remove("active"));b.classList.add("active");
+  if(!it.p)return;const m=markers[it.p];if(!m)return;
+  map.flyTo(P[it.p].ll,Math.max(map.getZoom(),14),{duration:.6});
+  map.once("moveend",()=>m.openPopup());});
+
+/* day tabs */
+const daysEl=document.getElementById("days");
+[{id:"all",date:"全部",wd:"5 天"},...DAYS].forEach(d=>{const b=document.createElement("button");b.className="day";b.dataset.id=d.id;
+  b.innerHTML=`<b>${d.date}</b><span>${d.id==="all"?d.wd:"週"+d.wd}</span>`;
+  b.onclick=()=>{state.day=d.id;render();b.scrollIntoView({inline:"nearest",block:"nearest"});};daysEl.appendChild(b);});
+[["lg","group"],["lf","free"],["lm","move"]].forEach(([id,t])=>document.getElementById(id).onclick=()=>{state.show[t]=!state.show[t];render();});
+
+render();
+setTimeout(()=>map.invalidateSize(),200);
+addEventListener("resize",()=>map.invalidateSize());
+</script>
